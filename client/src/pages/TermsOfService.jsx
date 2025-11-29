@@ -51,7 +51,7 @@ const styles = {
     container: {
         maxWidth: '800px',
         margin: '0 auto',
-        padding: '40px 20px',
+        padding: '100px 20px 40px',
         color: '#e0e0e0',
         fontFamily: 'Inter, sans-serif',
     },

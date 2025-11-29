@@ -3,10 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 import TickDetailModal from '../components/TickDetailModal';
 
+import axios from 'axios';
+
 function LandingPage() {
     const [location, setLocation] = useState('');
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -16,10 +20,25 @@ function LandingPage() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
+        setError('');
         if (location.trim()) {
-            navigate(`/results?location=${encodeURIComponent(location)}`);
+            setIsLoading(true);
+            try {
+                // Enforce a minimum loading time of 1.5 seconds for the animation to be seen
+                const [res] = await Promise.all([
+                    axios.get(`http://localhost:3002/api/geocode?zip=${location}`),
+                    new Promise(resolve => setTimeout(resolve, 1500))
+                ]);
+
+                const { lat, lon, city, state } = res.data;
+                navigate(`/results?lat=${lat}&lon=${lon}&city=${encodeURIComponent(city)}&state=${state}`);
+            } catch (err) {
+                console.error("Geocoding error:", err);
+                setError('Invalid zip code. Please try again.');
+                setIsLoading(false);
+            }
         }
     };
 
@@ -132,6 +151,12 @@ function LandingPage() {
 
     return (
         <div className="landing-container light-mode">
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="spinner"></div>
+                    <div className="loading-text">Analyzing Local Risk Factors...</div>
+                </div>
+            )}
             <TickDetailModal tick={selectedTick} onClose={() => setSelectedTick(null)} />
             {/* Hero Section */}
             <section className="hero-section">
@@ -155,6 +180,7 @@ function LandingPage() {
                             Check Risk
                         </button>
                     </form>
+                    {error && <p style={{ color: '#ff4444', marginTop: '10px', fontWeight: 'bold', textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{error}</p>}
                 </div>
                 <div className="scroll-indicator dark-text fade-in-up" style={{ animationDelay: '0.6s' }}>
                     <div className="arrow-down dark-border"></div>

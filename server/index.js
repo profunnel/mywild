@@ -162,6 +162,13 @@ function calculateTickRisk(currentTemp, humidity, recentTemps = [], last30DaysSt
         }
     } else if (currentTemp >= 35) {
         riskScore += 0.5;  // Reduced from 1
+        factors.push({
+            desc: "Temps allow limited activity.",
+            direction: "down",
+            source: "NWS Daily Forecast",
+            impact: "Low",
+            value: `${Math.round(currentTemp)}°F (Daily High)`
+        });
     } else {
         riskScore -= 0.5;  // Added penalty for cold temps
         factors.push({
@@ -804,9 +811,13 @@ app.get('/api/heatmap', async (req, res) => {
 
 // --- LLM Summary Endpoint ---
 app.post('/api/summary', async (req, res) => {
+    console.log("Hit /api/summary endpoint");
     const { status, factors, weather } = req.body;
 
+    console.log("Checking API Key:", process.env.GEMINI_API_KEY ? "Present" : "Missing");
+
     if (!process.env.GEMINI_API_KEY) {
+        console.log("API Key missing, returning null");
         return res.json({ summary: null }); // Fallback to rule-based
     }
 

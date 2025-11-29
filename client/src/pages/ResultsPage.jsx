@@ -94,7 +94,8 @@ function ResultsPage() {
                 const [forecastRes, historyRes, heatmapRes] = await Promise.all([
                     axios.get(`http://localhost:3002/api/forecast?lat=${lat}&lon=${lon}&state=${state}`),
                     axios.get(`http://localhost:3002/api/history?lat=${lat}&lon=${lon}&state=${state}`),
-                    axios.get(`http://localhost:3002/api/heatmap?lat=${lat}&lon=${lon}&radius=${radius}`)
+                    axios.get(`http://localhost:3002/api/heatmap?lat=${lat}&lon=${lon}&radius=${radius}`),
+                    new Promise(resolve => setTimeout(resolve, 1500)) // Enforce minimum 1.5s loading time
                 ]);
 
                 console.log("Forecast Data:", forecastRes.data);
@@ -323,8 +324,12 @@ function ResultsPage() {
     }, [forecast, allFactorsRaw]); // Depend on raw factors or memoized factors
 
     if (loading) {
-        console.log("Rendering Loading State");
-        return <div className="loading">Analyzing Tick Activity...</div>;
+        return (
+            <div className="loading-overlay">
+                <div className="spinner"></div>
+                <div className="loading-text">Generating Tick Risk Report...</div>
+            </div>
+        );
     }
     if (!forecast) {
         console.log("Rendering Error State");
@@ -418,8 +423,8 @@ function ResultsPage() {
             if (filteredPayload.length === 0) return null;
 
             return (
-                <div className="custom-tooltip" style={{ backgroundColor: '#333', padding: '10px', border: '1px solid #555' }}>
-                    <p className="label" style={{ color: '#fff', margin: 0 }}>{label}</p>
+                <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #eee', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
+                    <p className="label" style={{ color: '#333', margin: 0, fontWeight: 'bold' }}>{label}</p>
                     {filteredPayload.map((p, i) => (
                         <p key={i} style={{ color: p.color, margin: 0 }}>
                             {p.name}: {typeof p.value === 'number' ? p.value.toFixed(1) : p.value}
@@ -435,7 +440,7 @@ function ResultsPage() {
         <div className="results-container">
             <header className="results-header">
                 <button onClick={() => navigate('/')} className="back-btn">← Back</button>
-                <h1>Forecast for {city}, {state}</h1>
+                <h1>Tick Risk Report for {city}, {state}</h1>
             </header>
 
             {/* FULL WIDTH: Risk Gauge */}
@@ -568,23 +573,23 @@ function ResultsPage() {
                                 <h4>Projected Risk Score</h4>
                                 <ResponsiveContainer width="100%" height={300}>
                                     <ComposedChart data={chartData}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                                        <XAxis dataKey="date" stroke="#888" tickFormatter={(str) => str ? String(str).slice(5) : ''} />
-                                        <YAxis stroke="#888" domain={[0, 10]} ticks={[0, 2, 4, 6, 8]} tickFormatter={riskLevelFormatter} width={80} />
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                                        <XAxis dataKey="date" stroke="#666" tick={{ fill: '#666' }} tickFormatter={(str) => str ? String(str).slice(5) : ''} />
+                                        <YAxis stroke="#666" tick={{ fill: '#666' }} domain={[0, 10]} ticks={[0, 2, 4, 6, 8]} tickFormatter={riskLevelFormatter} width={80} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        <Legend verticalAlign="top" height={36} />
+                                        <Legend verticalAlign="top" height={36} wrapperStyle={{ color: '#333' }} />
 
                                         {/* Historical Data (Solid, Grey) */}
-                                        <Line type="monotone" dataKey="riskHistory" stroke="#90a4ae" dot={false} name={legendLabels.observedRisk} strokeWidth={2} connectNulls={true} />
+                                        <Line type="monotone" dataKey="riskHistory" stroke="#b0bec5" dot={false} name={legendLabels.observedRisk} strokeWidth={2} connectNulls={true} />
 
                                         {/* Today Marker (Point) */}
-                                        <Scatter dataKey="todayRiskPoint" fill="white" name={legendLabels.today} shape="circle" r={6} isAnimationActive={false} />
+                                        <Scatter dataKey="todayRiskPoint" fill="#333" name={legendLabels.today} shape="circle" r={6} isAnimationActive={false} />
 
                                         {/* Forecast Data (Solid, Green) */}
-                                        <Line type="monotone" dataKey="riskForecast" stroke="#00e676" dot={false} name={legendLabels.actualForecast} strokeWidth={4} connectNulls={true} />
+                                        <Line type="monotone" dataKey="riskForecast" stroke="#2e7d32" dot={false} name={legendLabels.actualForecast} strokeWidth={4} connectNulls={true} />
 
                                         {/* Seasonal Trend (Dotted, Purple) */}
-                                        <Line type="monotone" dataKey="riskSeasonal" stroke="#ab47bc" strokeDasharray="5 5" dot={false} name={legendLabels.seasonalTrends} strokeWidth={2} connectNulls={true} />
+                                        <Line type="monotone" dataKey="riskSeasonal" stroke="#9c27b0" strokeDasharray="5 5" dot={false} name={legendLabels.seasonalTrends} strokeWidth={2} connectNulls={true} />
                                     </ComposedChart>
                                 </ResponsiveContainer>
                             </div>
@@ -594,27 +599,27 @@ function ResultsPage() {
                                 <h4>Daily High Temperature Chart</h4>
                                 <ResponsiveContainer width="100%" height={300}>
                                     <ComposedChart data={chartData}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                                        <XAxis dataKey="date" stroke="#888" tickFormatter={(str) => str ? String(str).slice(5) : ''} />
-                                        <YAxis stroke="#888" domain={[dataMin => Math.min(dataMin, 40), 'auto']} tickFormatter={(val) => val ? val.toFixed(1) : ''} />
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                                        <XAxis dataKey="date" stroke="#666" tick={{ fill: '#666' }} tickFormatter={(str) => str ? String(str).slice(5) : ''} />
+                                        <YAxis stroke="#666" tick={{ fill: '#666' }} domain={[dataMin => Math.min(dataMin, 40), 'auto']} tickFormatter={(val) => val ? val.toFixed(1) : ''} />
                                         <Tooltip
                                             content={<CustomTooltip />}
                                             formatter={(value) => typeof value === 'number' ? value.toFixed(1) + '°F' : value}
                                         />
-                                        <Legend verticalAlign="top" height={36} />
-                                        <ReferenceLine y={45} stroke="red" strokeDasharray="3 3" label={{ value: "Typical Tick Activity Threshold (45°F)", fill: 'red', fontSize: 12 }} />
+                                        <Legend verticalAlign="top" height={36} wrapperStyle={{ color: '#333' }} />
+                                        <ReferenceLine y={45} stroke="#d32f2f" strokeDasharray="3 3" label={{ value: "Typical Tick Activity Threshold (45°F)", fill: '#d32f2f', fontSize: 12 }} />
 
                                         {/* Historical Temperature (Solid, Grey) */}
-                                        <Line type="monotone" dataKey="tempHistory" stroke="#90a4ae" dot={false} name={legendLabels.observedTemp} strokeWidth={2} connectNulls={true} />
+                                        <Line type="monotone" dataKey="tempHistory" stroke="#b0bec5" dot={false} name={legendLabels.observedTemp} strokeWidth={2} connectNulls={true} />
 
                                         {/* Today Marker (Point) */}
-                                        <Scatter dataKey="todayTempPoint" fill="white" name={legendLabels.today} shape="circle" r={6} isAnimationActive={false} />
+                                        <Scatter dataKey="todayTempPoint" fill="#333" name={legendLabels.today} shape="circle" r={6} isAnimationActive={false} />
 
                                         {/* Forecast Temperature (Solid, Green) */}
-                                        <Line type="monotone" dataKey="tempForecast" stroke="#00e676" dot={false} name={legendLabels.tempForecast} strokeWidth={4} connectNulls={true} />
+                                        <Line type="monotone" dataKey="tempForecast" stroke="#2e7d32" dot={false} name={legendLabels.tempForecast} strokeWidth={4} connectNulls={true} />
 
                                         {/* Seasonal Temperature (Dotted, Purple) */}
-                                        <Line type="monotone" dataKey="tempSeasonal" stroke="#ab47bc" strokeDasharray="5 5" dot={false} name={legendLabels.tempSeasonal} strokeWidth={2} connectNulls={true} />
+                                        <Line type="monotone" dataKey="tempSeasonal" stroke="#9c27b0" strokeDasharray="5 5" dot={false} name={legendLabels.tempSeasonal} strokeWidth={2} connectNulls={true} />
                                     </ComposedChart>
                                 </ResponsiveContainer>
                             </div>
@@ -628,13 +633,13 @@ function ResultsPage() {
                         <div className="chart-wrapper">
                             <ResponsiveContainer width="100%" height={400}>
                                 <ComposedChart data={historyDataWithToday}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                                    <XAxis dataKey="date" stroke="#888" tickFormatter={(str) => str ? String(str).slice(5) : ''} minTickGap={30} />
-                                    <YAxis stroke="#888" domain={[0, 10]} ticks={[0, 2, 4, 6, 8]} tickFormatter={riskLevelFormatter} width={80} />
-                                    <Tooltip contentStyle={{ backgroundColor: '#333', border: 'none' }} />
-                                    <Legend />
-                                    <Line type="monotone" dataKey="risk" stroke="#f44336" dot={false} name="Avg Risk Score" strokeWidth={3} />
-                                    <Scatter dataKey="todayMarker" fill="white" name="Today" shape="circle" r={8} isAnimationActive={false} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                                    <XAxis dataKey="date" stroke="#666" tick={{ fill: '#666' }} tickFormatter={(str) => str ? String(str).slice(5) : ''} minTickGap={30} />
+                                    <YAxis stroke="#666" tick={{ fill: '#666' }} domain={[0, 10]} ticks={[0, 2, 4, 6, 8]} tickFormatter={riskLevelFormatter} width={80} />
+                                    <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #eee', color: '#333' }} itemStyle={{ color: '#333' }} labelStyle={{ color: '#333' }} />
+                                    <Legend wrapperStyle={{ color: '#333' }} />
+                                    <Line type="monotone" dataKey="risk" stroke="#d32f2f" dot={false} name="Avg Risk Score" strokeWidth={3} />
+                                    <Scatter dataKey="todayMarker" fill="#333" name="Today" shape="circle" r={8} isAnimationActive={false} />
                                 </ComposedChart>
                             </ResponsiveContainer>
                         </div>
@@ -676,8 +681,8 @@ function ResultsPage() {
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
     );
 }
