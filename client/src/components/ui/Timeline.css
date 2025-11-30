@@ -1,0 +1,290 @@
+/* ============================================================================
+   TIMELINE COMPONENT STYLES
+   Seasonal tick activity visualization
+   ============================================================================ */
+
+.timeline {
+    width: 100%;
+}
+
+/* ============================================================================
+   CHART CONTAINER
+   ============================================================================ */
+
+.timeline__chart {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+/* ============================================================================
+   Y-AXIS
+   ============================================================================ */
+
+.timeline__y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+    padding-bottom: 1.5rem;
+    /* Space for month labels */
+}
+
+.timeline__y-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ============================================================================
+   GRAPH AREA
+   ============================================================================ */
+
+.timeline__graph {
+    position: relative;
+    flex: 1;
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+/* ============================================================================
+   GRID LINES
+   ============================================================================ */
+
+.timeline__grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 1.5rem;
+    /* Space for labels */
+    pointer-events: none;
+}
+
+.timeline__grid-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   MONTH COLUMN
+   ============================================================================ */
+
+.timeline__month {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 40px;
+}
+
+/* ============================================================================
+   BARS
+   ============================================================================ */
+
+.timeline__bars {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 1.5rem);
+    /* Subtract label space */
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
+
+.timeline__bar {
+    flex: 1;
+    max-width: 24px;
+    border-radius: 4px 4px 0 0;
+    transition: opacity var(--transition-fast);
+}
+
+.timeline__bar:hover {
+    opacity: 0.8;
+    transform: scaleY(1.05);
+    transform-origin: bottom;
+}
+
+/* Life stage colors */
+.timeline__bar--larva {
+    background: var(--gradient-accent);
+}
+
+.timeline__bar--nymph {
+    background: var(--gradient-success);
+}
+
+.timeline__bar--adult {
+    background: var(--gradient-warning);
+}
+
+/* ============================================================================
+   MONTH LABELS
+   ============================================================================ */
+
+.timeline__month-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: calc(200px - 1.5rem);
+    /* Full height of graph */
+    background: var(--color-primary);
+    opacity: 0.3;
+}
+
+/* ============================================================================
+   LEGEND
+   ============================================================================ */
+
+.timeline__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+    padding: var(--space-sm);
+    background-color: var(--bg-subtle);
+    border-radius: var(--radius-sm);
+}
+
+.timeline__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.timeline__legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.timeline__legend-color--larva {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.timeline__legend-color--nymph {
+    background: linear-gradient(135deg, #fb923c, #f97316);
+}
+
+.timeline__legend-color--adult {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.timeline__legend-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .timeline__graph {
+        height: 150px;
+        gap: 2px;
+    }
+
+    .timeline__month {
+        min-width: 24px;
+    }
+
+    .timeline__bar {
+        max-width: 8px;
+    }
+
+    .timeline__month-label {
+        font-size: 0.625rem;
+    }
+
+    .timeline__legend {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ============================================================================
+   DARK SECTION VARIANT
+   ============================================================================ */
+
+.section--dark .timeline__grid-line {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.section--dark .timeline__y-label,
+.section--dark .timeline__month-label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.section--dark .timeline__legend {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.section--dark .timeline__legend-label {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.section--dark .timeline__month--current {
+    background-color: rgba(212, 225, 87, 0.1);
+}
+
+.section--dark .timeline__current-indicator {
+    background-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(212, 225, 87, 0.3);
+}
+
+.section--dark .timeline__current-indicator::before {
+    background: var(--color-accent);
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .timeline__bar {
+        transition: none;
+    }
+}
+
+/* High contrast */
+@media (prefers-contrast: high) {
+    .timeline__grid-line {
+        background-color: var(--text-primary);
+    }
+
+    .timeline__bar {
+        border: 1px solid var(--text-primary);
+    }
+}
+
+/* Print */
+@media print {
+    .timeline {
+        page-break-inside: avoid;
+    }
+
+    .timeline__legend {
+        background-color: transparent;
+        border: 1px solid #000;
+    }
+
+    .timeline__bar {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}

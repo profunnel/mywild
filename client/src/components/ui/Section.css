@@ -1,0 +1,182 @@
+.section--visible>.section__container>*:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.section--visible>.section__container>*:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.section--visible>.section__container>*:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+/* Container */
+.section__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+}
+
+/* ============================================================================
+   BACKGROUND VARIANTS
+   ============================================================================ */
+
+/* White - Default, clean background for cards and reading surfaces */
+.section--white {
+    background-color: var(--bg-paper);
+    color: var(--text-primary);
+}
+
+/* Sage - Nature/Biology sections with soft green tint */
+.section--sage {
+    background-color: var(--bg-sage);
+    color: var(--text-primary);
+}
+
+/* Dark - Footer, dramatic sections with white text */
+.section--dark {
+    background-color: var(--bg-dark);
+    color: var(--text-inverse);
+}
+
+/* Dark variant adjustments for links and headings */
+.section--dark h1,
+.section--dark h2,
+.section--dark h3,
+.section--dark h4,
+.section--dark h5,
+.section--dark h6 {
+    color: var(--text-inverse);
+}
+
+.section--dark a {
+    color: var(--color-accent);
+}
+
+.section--dark a:hover {
+    color: var(--color-accent-hover);
+}
+
+.section--dark p,
+.section--dark li {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Subtle - Off-white for section differentiation */
+.section--subtle {
+    background-color: var(--bg-subtle);
+    color: var(--text-primary);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Desktop */
+@media (min-width: 768px) {
+    .section {
+        padding: 6rem 0;
+        /* Desktop: py-24 (96px) */
+    }
+}
+
+/* Large desktop - increase container padding */
+@media (min-width: 1200px) {
+    .section__container {
+        padding: 0 var(--space-lg);
+    }
+}
+
+/* Mobile - reduce padding */
+@media (max-width: 480px) {
+    .section {
+        padding: 3rem 0;
+    }
+
+    .section__container {
+        padding: 0 var(--space-sm);
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Reduced motion - disable animations */
+@media (prefers-reduced-motion: reduce) {
+    .section {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .section--visible>.section__container>* {
+        animation: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+
+    .section--white,
+    .section--subtle {
+        border-top: 1px solid var(--text-primary);
+        border-bottom: 1px solid var(--text-primary);
+    }
+
+    .section--dark {
+        border-top: 1px solid var(--text-inverse);
+        border-bottom: 1px solid var(--text-inverse);
+    }
+}
+
+/* Print styles */
+@media print {
+    .section {
+        padding: 1rem 0;
+        opacity: 1;
+        transform: none;
+        page-break-inside: avoid;
+    }
+
+    .section--dark {
+        background-color: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--text-primary);
+    }
+
+    .section--sage,
+    .section--subtle {
+        background-color: transparent;
+    }
+}
+
+/* ============================================================================
+   UTILITY MODIFIERS
+   ============================================================================ */
+
+/* Full width section (remove max-width constraint) */
+.section--full-width .section__container {
+    max-width: none;
+}
+
+/* Narrow section (for focused content) */
+.section--narrow .section__container {
+    max-width: 800px;
+}
+
+/* No padding section (for full-width images, etc.) */
+.section--no-padding {
+    padding: 0;
+}
+
+/* Extra padding */
+.section--extra-padding {
+    padding: 8rem 0;
+}
+
+@media (max-width: 768px) {
+    .section--extra-padding {
+        padding: 5rem 0;
+    }
+}

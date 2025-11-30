@@ -1,0 +1,315 @@
+/* ============================================================================
+   FEATURE GRID COMPONENT STYLES
+   Responsive grid with mobile carousel
+   ============================================================================ */
+
+.feature-grid {
+    display: grid;
+    gap: var(--space-md);
+    width: 100%;
+}
+
+/* Desktop: Grid layout */
+@media (min-width: 768px) {
+    .feature-grid--cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .feature-grid--cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .feature-grid--cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Mobile: Horizontal scroll carousel */
+@media (max-width: 767px) {
+    .feature-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: var(--space-sm);
+        padding-bottom: var(--space-sm);
+        /* Space for scrollbar */
+
+        /* Hide scrollbar but keep functionality */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .feature-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Cards take minimum width on mobile */
+    .feature-card {
+        flex: 0 0 280px;
+        /* Fixed width for consistent carousel */
+        scroll-snap-align: start;
+    }
+}
+
+/* ============================================================================
+   FEATURE CARD
+   ============================================================================ */
+
+.feature-card {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    /* Styling */
+    background: var(--bg-paper);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+
+    /* Min height for consistency */
+    min-height: 200px;
+}
+
+/* Hover effect (from utility class .hover-lift) */
+.feature-card.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* ============================================================================
+   ICON CONTAINER
+   ============================================================================ */
+
+.feature-card__icon-container {
+    /* Circular background */
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary-light);
+
+    /* Center icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: var(--space-sm);
+}
+
+.feature-card__icon {
+    font-size: 1.75rem;
+    color: var(--text-inverse);
+}
+
+/* ============================================================================
+   IMAGE CONTAINER
+   ============================================================================ */
+
+.feature-card__image-container {
+    width: 100%;
+    height: 150px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: var(--space-sm);
+}
+
+.feature-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.feature-card:hover .feature-card__image {
+    transform: scale(1.05);
+}
+
+/* ============================================================================
+   TEXT CONTENT
+   ============================================================================ */
+
+.feature-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+    line-height: 1.3;
+}
+
+.feature-card__description {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
+    flex-grow: 1;
+    /* Push link to bottom */
+}
+
+/* ============================================================================
+   LINK
+   ============================================================================ */
+
+.feature-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+
+    /* Touch target */
+    min-height: 44px;
+    min-width: 44px;
+}
+
+.feature-card__link:hover {
+    background-color: var(--bg-subtle);
+    color: var(--color-primary-dark);
+}
+
+.feature-card__link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Arrow icon (if you want to add one with ::after) */
+.feature-card__link::after {
+    content: '→';
+    font-size: 1rem;
+    transition: transform var(--transition-fast);
+}
+
+.feature-card__link:hover::after {
+    transform: translateX(4px);
+}
+
+/* ============================================================================
+   DARK SECTION VARIANT
+   ============================================================================ */
+
+.section--dark .feature-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.section--dark .feature-card__title {
+    color: var(--text-inverse);
+}
+
+.section--dark .feature-card__description {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.section--dark .feature-card__link {
+    color: var(--color-accent);
+}
+
+.section--dark .feature-card__link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-accent-hover);
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .feature-card.hover-lift {
+        transition: none;
+    }
+
+    .feature-card.hover-lift:hover {
+        transform: none;
+    }
+
+    .feature-card__image {
+        transition: none;
+    }
+
+    .feature-card:hover .feature-card__image {
+        transform: none;
+    }
+
+    .feature-card__link::after {
+        transition: none;
+    }
+
+    .feature-card__link:hover::after {
+        transform: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .feature-card {
+        border: 2px solid var(--text-primary);
+    }
+
+    .feature-card__icon-container {
+        border: 2px solid var(--text-inverse);
+    }
+}
+
+/* Print styles */
+@media print {
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .feature-card {
+        box-shadow: none;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+
+    .feature-card__link::after {
+        display: none;
+    }
+}
+
+/* ============================================================================
+   SCROLL HINT (Mobile)
+   Add a subtle indicator that content is scrollable
+   ============================================================================ */
+
+@media (max-width: 767px) {
+
+    /* Add fade effect at edges to indicate scrolling */
+    .feature-grid::after {
+        content: '';
+        position: sticky;
+        right: 0;
+        width: 40px;
+        height: 100%;
+        background: linear-gradient(to left, var(--bg-paper), transparent);
+        pointer-events: none;
+        flex-shrink: 0;
+    }
+
+    /* If inside dark section */
+    .section--dark .feature-grid::after {
+        background: linear-gradient(to left, var(--bg-dark), transparent);
+    }
+
+    .section--sage .feature-grid::after {
+        background: linear-gradient(to left, var(--bg-sage), transparent);
+    }
+
+    .section--subtle .feature-grid::after {
+        background: linear-gradient(to left, var(--bg-subtle), transparent);
+    }
+}

@@ -1,23 +1,5 @@
 :root {
   --bg-color: #f0f4f0;
-  /* Light cream background */
-  --card-bg: #ffffff;
-  --text-color: #333333;
-  --accent-color: #2e7d32;
-}
-
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  min-height: 100vh;
-}
-
-.app-container {
-  max-width: 800px;
-  width: 100%;
-  padding: 2rem;
   text-align: center;
 }
 

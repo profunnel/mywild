@@ -1,0 +1,241 @@
+/* ============================================================================
+   CONTENT BLOCK COMPONENT STYLES
+   Alternating text/image layouts with responsive design
+   ============================================================================ */
+
+.content-block {
+    /* Layout */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    align-items: center;
+}
+
+/* Desktop: Two-column grid */
+@media (min-width: 768px) {
+    .content-block {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+    }
+
+    /* Image on right (default) */
+    .content-block--image-right .content-block__text {
+        order: 1;
+    }
+
+    .content-block--image-right .content-block__image-container {
+        order: 2;
+    }
+
+    /* Image on left */
+    .content-block--image-left .content-block__text {
+        order: 2;
+    }
+
+    .content-block--image-left .content-block__image-container {
+        order: 1;
+    }
+}
+
+/* ============================================================================
+   TEXT CONTENT
+   ============================================================================ */
+
+.content-block__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.content-block__overline {
+    display: block;
+    margin-bottom: var(--space-xs);
+}
+
+.content-block__title {
+    margin-bottom: var(--space-sm);
+}
+
+.content-block__body {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.content-block__body p {
+    margin-bottom: var(--space-sm);
+}
+
+.content-block__body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Lists within content blocks */
+.content-block__body ul,
+.content-block__body ol {
+    margin: var(--space-sm) 0;
+    padding-left: 1.5rem;
+}
+
+.content-block__body li {
+    margin-bottom: var(--space-xs);
+    line-height: 1.6;
+}
+
+/* Links within content blocks */
+.content-block__body a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    transition: color var(--transition-fast);
+}
+
+.content-block__body a:hover {
+    color: var(--color-primary-light);
+}
+
+/* ============================================================================
+   IMAGE CONTAINER
+   ============================================================================ */
+
+.content-block__image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Maintain aspect ratio */
+.content-block__image-container::before {
+    content: '';
+    display: block;
+    padding-top: 66.67%;
+    /* 3:2 aspect ratio (can be adjusted) */
+}
+
+.content-block__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+/* Subtle zoom on hover */
+.content-block__image-container:hover .content-block__image {
+    transform: scale(1.05);
+}
+
+/* ============================================================================
+   MOBILE LAYOUT
+   ============================================================================ */
+
+@media (max-width: 767px) {
+    .content-block {
+        gap: var(--space-sm);
+    }
+
+    /* Image always comes first on mobile */
+    .content-block__image-container {
+        order: 1;
+        margin-bottom: var(--space-sm);
+    }
+
+    .content-block__text {
+        order: 2;
+    }
+
+    .content-block__body {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================================================
+   ASPECT RATIO VARIANTS
+   ============================================================================ */
+
+/* 16:9 aspect ratio (widescreen) */
+.content-block--aspect-16-9 .content-block__image-container::before {
+    padding-top: 56.25%;
+    /* 9/16 = 56.25% */
+}
+
+/* 4:3 aspect ratio (standard) */
+.content-block--aspect-4-3 .content-block__image-container::before {
+    padding-top: 75%;
+    /* 3/4 = 75% */
+}
+
+/* Square */
+.content-block--aspect-square .content-block__image-container::before {
+    padding-top: 100%;
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Reduced motion - disable zoom effect */
+@media (prefers-reduced-motion: reduce) {
+    .content-block__image {
+        transition: none;
+    }
+
+    .content-block__image-container:hover .content-block__image {
+        transform: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .content-block__image-container {
+        border: 2px solid var(--text-primary);
+    }
+}
+
+/* Print styles */
+@media print {
+    .content-block {
+        display: block;
+        page-break-inside: avoid;
+    }
+
+    .content-block__image-container {
+        box-shadow: none;
+        border: 1px solid #000;
+        margin-bottom: 1rem;
+    }
+
+    .content-block__image {
+        position: static;
+    }
+
+    .content-block__image-container::before {
+        display: none;
+    }
+}
+
+/* ============================================================================
+   DARK SECTION VARIANT
+   ============================================================================ */
+
+/* When inside a dark section, adjust text colors */
+.section--dark .content-block__title {
+    color: var(--text-inverse);
+}
+
+.section--dark .content-block__body {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.section--dark .content-block__body a {
+    color: var(--color-accent);
+}
+
+.section--dark .content-block__body a:hover {
+    color: var(--color-accent-hover);
+}

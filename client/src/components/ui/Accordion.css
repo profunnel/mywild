@@ -1,0 +1,207 @@
+/* ============================================================================
+   TITLE
+   ============================================================================ */
+
+.accordion__title {
+    flex: 1;
+    line-height: 1.4;
+}
+
+/* ============================================================================
+   ICON (Chevron)
+   ============================================================================ */
+
+.accordion__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: var(--text-secondary);
+    transition: transform var(--transition-base);
+}
+
+/* Rotate chevron when open */
+.accordion__item--open .accordion__icon {
+    transform: rotate(180deg);
+}
+
+.accordion__icon svg {
+    display: block;
+}
+
+/* ============================================================================
+   CONTENT (Expandable Panel)
+   ============================================================================ */
+
+.accordion__content {
+    /* Height transition */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-slow) ease-in-out;
+}
+
+/* Open state */
+.accordion__item--open .accordion__content {
+    max-height: 1000px;
+    /* Large enough for most content */
+}
+
+/* ============================================================================
+   BODY (Content Inside)
+   ============================================================================ */
+
+.accordion__body {
+    padding: 0 var(--space-md) var(--space-md) var(--space-md);
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.accordion__body p {
+    margin-bottom: var(--space-sm);
+}
+
+.accordion__body p:last-child {
+    margin-bottom: 0;
+}
+
+.accordion__body ul,
+.accordion__body ol {
+    margin: var(--space-sm) 0;
+    padding-left: 1.5rem;
+}
+
+.accordion__body li {
+    margin-bottom: var(--space-xs);
+}
+
+.accordion__body strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* ============================================================================
+   DARK SECTION VARIANT
+   ============================================================================ */
+
+.section--dark .accordion__item {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.section--dark .accordion__header {
+    color: var(--text-inverse);
+}
+
+.section--dark .accordion__header:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.section--dark .accordion__icon {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.section--dark .accordion__body {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.section--dark .accordion__body strong {
+    color: var(--text-inverse);
+}
+
+/* ============================================================================
+   NUMBERED VARIANT (For step-by-step guides)
+   ============================================================================ */
+
+.accordion--numbered .accordion__item {
+    counter-increment: accordion-counter;
+}
+
+.accordion--numbered .accordion__title::before {
+    content: counter(accordion-counter) ". ";
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-right: 0.5rem;
+}
+
+.accordion--numbered {
+    counter-reset: accordion-counter;
+}
+
+/* ============================================================================
+   COMPACT VARIANT
+   ============================================================================ */
+
+.accordion--compact .accordion__header {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.875rem;
+}
+
+.accordion--compact .accordion__body {
+    padding: 0 var(--space-sm) var(--space-sm) var(--space-sm);
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .accordion__content {
+        transition: none;
+    }
+
+    .accordion__icon {
+        transition: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .accordion__item {
+        border: 2px solid var(--text-primary);
+    }
+
+    .accordion__header:focus-visible {
+        outline: 3px solid var(--color-primary);
+    }
+}
+
+/* Print styles */
+@media print {
+    .accordion__item {
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+
+    /* Show all content when printing */
+    .accordion__content {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .accordion__icon {
+        display: none;
+    }
+}
+
+/* ============================================================================
+   FOCUS MANAGEMENT
+   ============================================================================ */
+
+/* Keyboard users get clear focus indication */
+.accordion__header:focus {
+    position: relative;
+    z-index: 1;
+}
+
+/* Active state (when clicking) */
+.accordion__header:active {
+    background-color: var(--bg-subtle);
+}
+
+.section--dark .accordion__header:active {
+    background-color: rgba(255, 255, 255, 0.1);
+}

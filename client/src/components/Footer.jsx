@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { states } from '../statesConfig';
 
 const Footer = () => {
     return (
@@ -10,6 +11,17 @@ const Footer = () => {
                     <p style={styles.text}>
                         Empowering you with real-time tick activity forecasts to stay safe outdoors.
                     </p>
+                </div>
+                <div style={styles.section}>
+                    <h4 style={styles.title}>Forecasts</h4>
+                    <div style={styles.links}>
+                        <Link to="/tick-forecast-2026" style={styles.link}>2026 Annual Forecast</Link>
+                        {states.map(state => (
+                            <Link key={state.slug} to={`/tick-forecast-${state.slug}`} style={styles.link}>
+                                {state.name}
+                            </Link>
+                        ))}
+                    </div>
                 </div>
                 <div style={styles.section}>
                     <h4 style={styles.title}>Legal</h4>
