@@ -6,33 +6,56 @@ const Footer = () => {
     return (
         <footer style={styles.footer}>
             <div style={styles.container}>
-                <div style={styles.section}>
-                    <h4 style={styles.title}>Tick Forecast</h4>
-                    <p style={styles.text}>
-                        Empowering you with real-time tick activity forecasts to stay safe outdoors.
-                    </p>
+                {/* Top Section: Brand, Resources, Legal */}
+                <div style={styles.topSection}>
+                    <div style={styles.brandColumn}>
+                        <h4 style={styles.brandTitle}>Tick Forecast</h4>
+                        <p style={styles.brandText}>
+                            Empowering you with real-time tick activity forecasts to stay safe outdoors.
+                        </p>
+                    </div>
+
+                    <div style={styles.linkColumn}>
+                        <h4 style={styles.columnTitle}>Resources</h4>
+                        <div style={styles.links}>
+                            <Link to="/tick-forecast-2026" style={styles.link}>2026 Annual Forecast</Link>
+                        </div>
+                    </div>
+
+                    <div style={styles.linkColumn}>
+                        <h4 style={styles.columnTitle}>Legal</h4>
+                        <div style={styles.links}>
+                            <Link to="/privacy" style={styles.link}>Privacy Policy</Link>
+                            <Link to="/terms" style={styles.link}>Terms of Service</Link>
+                        </div>
+                    </div>
                 </div>
-                <div style={styles.section}>
-                    <h4 style={styles.title}>Forecasts</h4>
-                    <div style={styles.links}>
-                        <Link to="/tick-forecast-2026" style={styles.link}>2026 Annual Forecast</Link>
-                        {states.map(state => (
-                            <Link key={state.slug} to={`/tick-forecast-${state.slug}`} style={styles.link}>
-                                {state.name}
-                            </Link>
+
+                {/* Divider */}
+                <div style={styles.divider}></div>
+
+                {/* Middle Section: State Links */}
+                <div style={styles.middleSection}>
+                    <h5 style={styles.subTitle}>State Forecasts</h5>
+                    <div style={styles.stateList}>
+                        {[...states].sort((a, b) => a.name.localeCompare(b.name)).map((state, index) => (
+                            <React.Fragment key={state.slug}>
+                                <Link to={`/tick-forecast-${state.slug}`} style={styles.stateLink}>
+                                    {state.name}
+                                </Link>
+                                {index < states.length - 1 && <span style={styles.separator}>, </span>}
+                            </React.Fragment>
                         ))}
                     </div>
                 </div>
-                <div style={styles.section}>
-                    <h4 style={styles.title}>Legal</h4>
-                    <div style={styles.links}>
-                        <Link to="/privacy" style={styles.link}>Privacy Policy</Link>
-                        <Link to="/terms" style={styles.link}>Terms of Service</Link>
-                    </div>
+
+                {/* Divider */}
+                <div style={styles.divider}></div>
+
+                {/* Bottom Section: Copyright */}
+                <div style={styles.copyright}>
+                    &copy; {new Date().getFullYear()} Tick Forecast. All rights reserved.
                 </div>
-            </div>
-            <div style={styles.copyright}>
-                &copy; {new Date().getFullYear()} Tick Forecast. All rights reserved.
             </div>
         </footer>
     );
@@ -40,53 +63,95 @@ const Footer = () => {
 
 const styles = {
     footer: {
-        backgroundColor: '#111',
-        borderTop: '1px solid #222',
-        padding: '40px 0 20px',
-        marginTop: 'auto', // Push to bottom if flex container
+        backgroundColor: '#064e3b', // Deep Emerald
+        color: '#ecfdf5', // Light Mint
+        padding: '60px 0 30px',
+        marginTop: 'auto',
+        borderTop: '1px solid #065f46',
     },
     container: {
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '0 20px',
+        padding: '0 24px',
+    },
+    topSection: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         gap: '40px',
         marginBottom: '40px',
     },
-    section: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px',
+    brandColumn: {
+        maxWidth: '350px',
     },
-    title: {
-        color: '#fff',
+    brandTitle: {
+        fontFamily: '"Outfit", sans-serif',
+        fontSize: '1.5rem',
+        fontWeight: '700',
+        color: '#ffffff',
+        marginBottom: '1rem',
+    },
+    brandText: {
+        color: '#d1fae5',
+        lineHeight: '1.6',
+        fontSize: '0.95rem',
+    },
+    columnTitle: {
+        fontFamily: '"Outfit", sans-serif',
         fontSize: '1.1rem',
-        margin: 0,
-    },
-    text: {
-        color: '#888',
-        fontSize: '0.9rem',
-        lineHeight: '1.5',
-        margin: 0,
+        fontWeight: '600',
+        color: '#ffffff',
+        marginBottom: '1.25rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
     },
     links: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
+        gap: '12px',
     },
     link: {
-        color: '#888',
+        color: '#d1fae5',
         textDecoration: 'none',
-        fontSize: '0.9rem',
+        fontSize: '0.95rem',
         transition: 'color 0.2s',
+    },
+    divider: {
+        height: '1px',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        margin: '30px 0',
+    },
+    middleSection: {
+        marginBottom: '10px',
+    },
+    subTitle: {
+        fontFamily: '"Outfit", sans-serif',
+        fontSize: '1rem',
+        fontWeight: '600',
+        color: '#6ee7b7', // Emerald 300
+        marginBottom: '1rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+    },
+    stateList: {
+        lineHeight: '1.8',
+        fontSize: '0.9rem',
+        color: '#d1fae5',
+    },
+    stateLink: {
+        color: '#ffffff',
+        textDecoration: 'none',
+        transition: 'color 0.2s',
+        fontWeight: '500',
+    },
+    separator: {
+        color: '#6ee7b7',
+        marginRight: '6px',
     },
     copyright: {
         textAlign: 'center',
-        color: '#555',
+        color: '#6ee7b7',
         fontSize: '0.85rem',
-        paddingTop: '20px',
-        borderTop: '1px solid #222',
+        paddingTop: '10px',
     },
 };
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../pages/LandingPage.css';
 
-const ZipInput = () => {
+const ZipInput = ({ buttonText = "Check Risk" }) => {
     const [location, setLocation] = useState('');
     const navigate = useNavigate();
     const [error, setError] = useState('');
@@ -48,8 +48,9 @@ const ZipInput = () => {
                     onChange={(e) => setLocation(e.target.value)}
                 />
                 <button type="submit" className="search-button">
-                    Check Risk
+                    {buttonText}
                 </button>
+
             </form>
             {error && <p style={{ color: '#ff4444', marginTop: '10px', fontWeight: 'bold', textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>{error}</p>}
         </>

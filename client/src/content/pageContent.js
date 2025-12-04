@@ -9,9 +9,9 @@
 
 export const seoMetadata = {
   state: {
-    titleTemplate: (stateName) => `${stateName} Tick Forecast 2026 | Lyme Disease Risk & Prevention`,
+    titleTemplate: (stateName) => `Tick Risk & Forecast in ${stateName} | Real-Time Tick Activity Map`,
     descriptionTemplate: (stateName) =>
-      `Get the latest ${stateName} tick forecast for 2026. Learn when ticks are most active, where they hide, and how to prevent Lyme disease and tick-borne illnesses in ${stateName}.`,
+      `Get today’s tick risk levels for ${stateName}. Check your ZIP code for real-time tick activity and forecasted risk using CDC and weather data.`,
     keywords: [
       'tick forecast',
       'Lyme disease risk',

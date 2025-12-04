@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { states } from '../statesConfig';
 import SeoMeta from './SeoMeta';
@@ -9,6 +9,69 @@ import { stateDetails } from '../content/stateContent';
 
 const StateForecastPage = ({ slug }) => {
     const [activeDisease, setActiveDisease] = useState(0);
+
+    // Carousel Drag Logic
+    const sliderRef = useRef(null);
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    const handleMouseDown = (e) => {
+        isDown = true;
+        sliderRef.current.classList.add('active');
+        startX = e.pageX - sliderRef.current.offsetLeft;
+        scrollLeft = sliderRef.current.scrollLeft;
+    };
+
+    const handleMouseLeave = () => {
+        isDown = false;
+        if (sliderRef.current) sliderRef.current.classList.remove('active');
+    };
+
+    const handleMouseUp = () => {
+        isDown = false;
+        if (sliderRef.current) sliderRef.current.classList.remove('active');
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - sliderRef.current.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll-fast
+        sliderRef.current.scrollLeft = scrollLeft - walk;
+    };
+
+    // Prevention Carousel Drag Logic
+    const preventionSliderRef = useRef(null);
+    let isPreventionDown = false;
+    let startPreventionX;
+    let scrollPreventionLeft;
+
+    const handlePreventionMouseDown = (e) => {
+        isPreventionDown = true;
+        preventionSliderRef.current.classList.add('active');
+        startPreventionX = e.pageX - preventionSliderRef.current.offsetLeft;
+        scrollPreventionLeft = preventionSliderRef.current.scrollLeft;
+    };
+
+    const handlePreventionMouseLeave = () => {
+        isPreventionDown = false;
+        if (preventionSliderRef.current) preventionSliderRef.current.classList.remove('active');
+    };
+
+    const handlePreventionMouseUp = () => {
+        isPreventionDown = false;
+        if (preventionSliderRef.current) preventionSliderRef.current.classList.remove('active');
+    };
+
+    const handlePreventionMouseMove = (e) => {
+        if (!isPreventionDown) return;
+        e.preventDefault();
+        const x = e.pageX - preventionSliderRef.current.offsetLeft;
+        const walk = (x - startPreventionX) * 2;
+        preventionSliderRef.current.scrollLeft = scrollPreventionLeft - walk;
+    };
+
     const params = useParams();
     const stateSlug = slug || params.stateSlug;
     const stateConfig = states.find(s => s.slug === stateSlug);
@@ -99,157 +162,173 @@ const StateForecastPage = ({ slug }) => {
 
             {/* Hero Section */}
             <Hero
-                title={`${stateConfig.name} Tick Forecast 2026`}
-                subtitle="Get a live tick activity risk report and forecast for your area"
+                title={`Today’s Tick Risk in ${stateConfig.name} – Real-Time Forecast & Activity Map`}
+                subtitle="Check your ZIP code for local tick activity, real-time risk levels, and prevention insights."
                 bgImage={stateConfig.heroImage || "/images/hero-bg.jpg"}
             >
                 <div style={{ marginTop: '2rem' }}>
-                    <ZipInput />
+                    <ZipInput buttonText="Check Tick Risk Now" />
+                    <p style={{
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        fontSize: '0.875rem',
+                        marginTop: '1rem',
+                        fontWeight: '500'
+                    }}>
+                        Updated daily using CDC and NOAA data.
+                    </p>
                 </div>
             </Hero>
 
             {/* Sticky Navigation */}
             <StickyNav links={navLinks} stateName={stateConfig.name} />
 
-            {/* Summary Section */}
-            <Section id="summary" variant="white" style={{ paddingBottom: '1rem' }}>
-                {/* Key Insights Section */}
-                {content.lymeStats && (
-                    <div style={{ marginBottom: '2rem' }}>
-                        <div className="premium-card" style={{
-                            padding: '2.5rem',
-                            background: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.3)',
-                            color: 'white'
+            {/* Surveillance Insights Section (Full Bleed) */}
+            {content.lymeStats && (
+                <Section id="surveillance" style={{ background: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)', color: 'white', padding: '4rem 0' }}>
+                    <div className="insights-header" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        marginBottom: '3rem',
+                        borderBottom: '1px solid rgba(255,255,255,0.1)',
+                        paddingBottom: '1.5rem'
+                    }}>
+                        <span style={{ fontSize: '1.5rem' }}>📊</span>
+                        <h3 style={{
+                            fontSize: '1.5rem',
+                            fontWeight: '700',
+                            color: 'white',
+                            margin: 0
                         }}>
+                            Surveillance Insights
+                        </h3>
+                    </div>
+
+                    <div className="insights-grid" style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '2rem'
+                    }}>
+                        <style>{`
+                            @media (max-width: 900px) {
+                                .insights-grid {
+                                    grid-template-columns: 1fr !important;
+                                    gap: 2rem !important;
+                                }
+                                .insights-header {
+                                    justify-content: center !important;
+                                }
+                                .insights-grid > div {
+                                    align-items: center !important;
+                                    text-align: center !important;
+                                    border-left: none !important;
+                                    padding-left: 0 !important;
+                                    border-bottom: 1px solid rgba(255,255,255,0.1);
+                                    padding-bottom: 2rem;
+                                }
+                                .insights-grid > div:last-child {
+                                    border-bottom: none;
+                                    padding-bottom: 0;
+                                }
+                            }
+                        `}</style>
+
+                        {/* Annual Cases */}
+                        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <h4 style={{
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: 'rgba(255,255,255,0.7)',
+                                fontSize: '0.75rem',
+                                fontWeight: '600',
+                                marginBottom: '0.75rem'
+                            }}>
+                                Annual Lyme Cases
+                            </h4>
                             <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.75rem',
-                                marginBottom: '2rem',
-                                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                                paddingBottom: '1rem'
+                                fontSize: '1.5rem',
+                                fontWeight: '700',
+                                color: 'white',
+                                lineHeight: '1.3',
+                                marginBottom: '0.5rem',
+                                fontFamily: 'Outfit, sans-serif'
                             }}>
-                                <span style={{ fontSize: '1.5rem' }}>📊</span>
-                                <h3 style={{
-                                    fontSize: '1.25rem',
-                                    fontWeight: '700',
-                                    color: 'white',
-                                    margin: 0
-                                }}>
-                                    Surveillance Insights
-                                </h3>
+                                {content.lymeStats.annualCases.split('(')[0]}
                             </div>
+                            {content.lymeStats.annualCases.includes('(') && (
+                                <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic', marginBottom: '1rem' }}>
+                                    {content.lymeStats.annualCases.split('(')[1].replace(')', '')}
+                                </p>
+                            )}
+                            <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginTop: 'auto' }}>
+                                Based on CDC surveillance data
+                            </p>
+                        </div>
 
-                            <div className="insights-grid" style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(3, 1fr)',
-                                gap: '2rem'
+                        {/* Trend */}
+                        <div style={{
+                            borderLeft: '1px solid rgba(255,255,255,0.1)',
+                            paddingLeft: '2rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            height: '100%'
+                        }} className="border-l-0 md:border-l">
+                            <h4 style={{
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: 'rgba(255,255,255,0.7)',
+                                fontSize: '0.75rem',
+                                fontWeight: '600',
+                                marginBottom: '0.75rem'
                             }}>
-                                <style>{`
-                                    @media (max-width: 900px) {
-                                        .insights-grid {
-                                            grid-template-columns: 1fr !important;
-                                            gap: 2rem !important;
-                                        }
-                                    }
-                                `}</style>
+                                Long-Term Trend
+                            </h4>
+                            <div style={{
+                                fontSize: '1.25rem',
+                                fontWeight: '600',
+                                color: 'white',
+                                lineHeight: '1.4',
+                                marginBottom: '1rem'
+                            }}>
+                                {content.lymeStats.trend}
+                            </div>
+                            <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginTop: 'auto' }}>
+                                Based on CDC surveillance data
+                            </p>
+                        </div>
 
-                                {/* Annual Cases */}
-                                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                                    <h4 style={{
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em',
-                                        color: 'rgba(255,255,255,0.7)',
-                                        fontSize: '0.75rem',
-                                        fontWeight: '600',
-                                        marginBottom: '0.75rem'
-                                    }}>
-                                        Annual Lyme Cases
-                                    </h4>
-                                    <div style={{
-                                        fontSize: '1.5rem',
-                                        fontWeight: '700',
-                                        color: 'white',
-                                        lineHeight: '1.3',
-                                        marginBottom: '0.5rem',
-                                        fontFamily: 'Outfit, sans-serif'
-                                    }}>
-                                        {content.lymeStats.annualCases.split('(')[0]}
-                                    </div>
-                                    {content.lymeStats.annualCases.includes('(') && (
-                                        <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic', marginBottom: '1rem' }}>
-                                            {content.lymeStats.annualCases.split('(')[1].replace(')', '')}
-                                        </p>
-                                    )}
-                                    <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginTop: 'auto' }}>
-                                        Based on CDC surveillance data
-                                    </p>
-                                </div>
-
-                                {/* Trend */}
-                                <div style={{
-                                    borderLeft: '1px solid rgba(255,255,255,0.1)',
-                                    paddingLeft: '2rem',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    height: '100%'
-                                }} className="border-l-0 md:border-l">
-                                    <h4 style={{
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em',
-                                        color: 'rgba(255,255,255,0.7)',
-                                        fontSize: '0.75rem',
-                                        fontWeight: '600',
-                                        marginBottom: '0.75rem'
-                                    }}>
-                                        Long-Term Trend
-                                    </h4>
-                                    <div style={{
-                                        fontSize: '1.25rem',
-                                        fontWeight: '600',
-                                        color: 'white',
-                                        lineHeight: '1.4',
-                                        marginBottom: '1rem'
-                                    }}>
-                                        {content.lymeStats.trend}
-                                    </div>
-                                    <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)', marginTop: 'auto' }}>
-                                        Based on CDC surveillance data
-                                    </p>
-                                </div>
-
-                                {/* High Risk Areas */}
-                                <div style={{
-                                    borderLeft: '1px solid rgba(255,255,255,0.1)',
-                                    paddingLeft: '2rem',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    height: '100%'
-                                }} className="border-l-0 md:border-l">
-                                    <h4 style={{
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em',
-                                        color: 'rgba(255,255,255,0.7)',
-                                        fontSize: '0.75rem',
-                                        fontWeight: '600',
-                                        marginBottom: '0.75rem'
-                                    }}>
-                                        High Risk Zones
-                                    </h4>
-                                    <div style={{
-                                        fontSize: '1rem',
-                                        color: 'rgba(255,255,255,0.9)',
-                                        lineHeight: '1.6'
-                                    }}>
-                                        {content.hotspots && content.hotspots.slice(0, 8).map(h => h.split('(')[0].replace(' County', '').trim()).join(', ')}
-                                    </div>
-                                </div>
+                        {/* High Risk Areas */}
+                        <div style={{
+                            borderLeft: '1px solid rgba(255,255,255,0.1)',
+                            paddingLeft: '2rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            height: '100%'
+                        }} className="border-l-0 md:border-l">
+                            <h4 style={{
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: 'rgba(255,255,255,0.7)',
+                                fontSize: '0.75rem',
+                                fontWeight: '600',
+                                marginBottom: '0.75rem'
+                            }}>
+                                High Risk Zones
+                            </h4>
+                            <div style={{
+                                fontSize: '1rem',
+                                color: 'rgba(255,255,255,0.9)',
+                                lineHeight: '1.6'
+                            }}>
+                                {content.hotspots && content.hotspots.slice(0, 8).map(h => h.split('(')[0].replace(' County', '').trim()).join(', ')}
                             </div>
                         </div>
                     </div>
-                )}
+                </Section>
+            )}
+
+            {/* Summary Section */}
+            <Section id="summary" variant="white" style={{ paddingBottom: '1rem' }}>
                 <div className="summary-layout" style={{
                     display: 'grid',
                     gridTemplateColumns: '1.2fr 0.8fr',
@@ -264,12 +343,23 @@ const StateForecastPage = ({ slug }) => {
                                 grid-template-columns: 1fr !important;
                                 gap: 3rem !important;
                             }
+                            .summary-text-content {
+                                text-align: center !important;
+                                display: flex;
+                                flex-direction: column;
+                                alignItems: center;
+                            }
+                            .summary-text-content p {
+                                max-width: 600px;
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
                         }
                     `}</style>
 
                     {/* Left Column: Text */}
-                    <div style={{ textAlign: 'left' }}>
-                        <span className="badge badge-info mb-6" style={{ display: 'inline-block' }}>Forecast Updated: Nov 2025</span>
+                    <div className="summary-text-content" style={{ textAlign: 'left' }}>
+                        <span className="badge badge-info mb-6" style={{ display: 'inline-block' }}>Forecast Updated: {new Date().toLocaleString('default', { month: 'short', year: 'numeric' })}</span>
                         <h2 style={{
                             fontSize: '2rem',
                             fontWeight: '700',
@@ -295,7 +385,7 @@ const StateForecastPage = ({ slug }) => {
                     </div>
 
                     {/* Right Column: Cards (Vertical Stack) */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         {/* Risk Level Card */}
                         <div className="premium-card hover-lift" style={{
                             background: 'white',
@@ -317,7 +407,7 @@ const StateForecastPage = ({ slug }) => {
                                 justifyContent: 'center',
                                 borderRadius: '0.75rem'
                             }}>⚠️</div>
-                            <div>
+                            <div style={{ textAlign: 'left' }}>
                                 <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Risk Level</div>
                                 <div style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-primary)' }}>{getRiskLevel()}</div>
                             </div>
@@ -344,7 +434,7 @@ const StateForecastPage = ({ slug }) => {
                                 justifyContent: 'center',
                                 borderRadius: '0.75rem'
                             }}>📅</div>
-                            <div>
+                            <div style={{ textAlign: 'left' }}>
                                 <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Peak Activity</div>
                                 <div style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-primary)' }}>{getPeakActivity()}</div>
                             </div>
@@ -371,7 +461,7 @@ const StateForecastPage = ({ slug }) => {
                                 justifyContent: 'center',
                                 borderRadius: '0.75rem'
                             }}>🕷️</div>
-                            <div>
+                            <div style={{ textAlign: 'left' }}>
                                 <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Dominant Vector</div>
                                 <div style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-primary)' }}>{content.dominantTick || 'Deer Tick'}</div>
                             </div>
@@ -429,7 +519,7 @@ const StateForecastPage = ({ slug }) => {
                             @media (max-width: 768px) {
                                 .premium-card {
                                     margin: 1rem !important;
-                                    padding: 1.5rem !important;
+                                    padding: 2.5rem 1.5rem !important;
                                     width: 95% !important;
                                 }
                             }
@@ -491,38 +581,124 @@ const StateForecastPage = ({ slug }) => {
                     </p>
                 </div>
 
-                <FeatureGrid columns={3}>
-                    {tickBiology.speciesComparison.species.map((species, idx) => (
-                        <div key={idx} className="premium-card hover-lift h-full flex flex-col" style={{
-                            padding: '2rem',
-                            borderTop: '4px solid var(--color-emerald-500)'
-                        }}>
-                            <div className="rounded-xl h-56 mb-4 overflow-hidden relative shadow-sm">
-                                <img
-                                    src={{
-                                        'Deer Tick / Blacklegged Tick': '/images/deer_tick.png',
-                                        'American Dog Tick': '/images/dog_tick.png',
-                                        'Lone Star Tick': '/images/lone_star_tick.png'
-                                    }[species.name] || '/images/deer_tick.png'}
-                                    alt={species.name}
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
+                <div className="vector-grid-container">
+                    <style>{`
+                        .vector-grid {
+                            display: grid;
+                            grid-template-columns: repeat(3, 1fr);
+                            gap: 2rem;
+                        }
+                        
+                        .scroll-indicator {
+                            display: none;
+                            text-align: right;
+                            font-size: 0.875rem;
+                            color: #64748b;
+                            margin-bottom: 0.5rem;
+                            padding-right: 1.5rem;
+                            animation: pulse 2s infinite;
+                            font-weight: 500;
+                        }
+
+                        @keyframes pulse {
+                            0%, 100% { opacity: 0.6; }
+                            50% { opacity: 1; }
+                        }
+                        
+                        @media (max-width: 768px) {
+                            .scroll-indicator {
+                                display: block;
+                            }
+
+                            .vector-grid {
+                                display: flex !important;
+                                overflow-x: auto;
+                                scroll-snap-type: x mandatory;
+                                gap: 1rem !important;
+                                padding-bottom: 2rem;
+                                margin: 0 -1.5rem;
+                                padding-left: 1.5rem;
+                                padding-right: 1.5rem;
+                                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                                cursor: grab;
+                            }
+                            
+                            .vector-grid.active {
+                                cursor: grabbing;
+                                cursor: -webkit-grabbing;
+                                scroll-snap-type: none; /* Disable snap while dragging for smoothness */
+                            }
+                            
+                            /* Hide scrollbar for cleaner look */
+                            .vector-grid::-webkit-scrollbar {
+                                display: none;
+                            }
+                            .vector-grid {
+                                -ms-overflow-style: none;
+                                scrollbar-width: none;
+                            }
+
+                            .vector-card {
+                                min-width: 80vw;
+                                scroll-snap-align: center;
+                                border-radius: 1rem;
+                                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+                            }
+
+                            .vector-image-container {
+                                height: 260px !important;
+                            }
+                        }
+                    `}</style>
+
+                    <div className="scroll-indicator">
+                        Swipe to explore →
+                    </div>
+
+                    <div
+                        className="vector-grid"
+                        ref={sliderRef}
+                        onMouseDown={handleMouseDown}
+                        onMouseLeave={handleMouseLeave}
+                        onMouseUp={handleMouseUp}
+                        onMouseMove={handleMouseMove}
+                    >
+                        {tickBiology.speciesComparison.species.map((species, idx) => (
+                            <div key={idx} className="premium-card hover-lift h-full flex flex-col vector-card" style={{
+                                padding: '0',
+                                borderTop: '4px solid var(--color-emerald-500)',
+                                overflow: 'hidden',
+                                background: 'white'
+                            }}>
+                                <div className="relative shadow-sm vector-image-container" style={{ width: '100%', height: '14rem' }}>
+                                    <img
+                                        src={{
+                                            'Deer Tick / Blacklegged Tick': '/images/deer_tick.png',
+                                            'American Dog Tick': '/images/dog_tick.png',
+                                            'Lone Star Tick': '/images/lone_star_tick.png'
+                                        }[species.name] || '/images/deer_tick.png'}
+                                        alt={species.name}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                </div>
+                                <div style={{ padding: '1.5rem', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                                    <h3 className="text-xl font-bold mb-2">{species.name}</h3>
+                                    <p className="text-sm italic text-muted mb-4">
+                                        {species.scientific}
+                                    </p>
+                                    <div className="flex-grow">
+                                        <p className="mb-4 text-sm">
+                                            <strong>Appearance:</strong> {species.appearance}
+                                        </p>
+                                        <p className="text-sm text-red-600 font-medium">
+                                            <strong>Diseases:</strong> {species.diseases.join(', ')}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2">{species.name}</h3>
-                            <p className="text-sm italic text-muted mb-4">
-                                {species.scientific}
-                            </p>
-                            <div className="flex-grow">
-                                <p className="mb-4 text-sm">
-                                    <strong>Appearance:</strong> {species.appearance}
-                                </p>
-                                <p className="text-sm text-red-600 font-medium">
-                                    <strong>Diseases:</strong> {species.diseases.join(', ')}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                </FeatureGrid>
+                        ))}
+                    </div>
+                </div>
             </Section>
 
             {/* Disease Surveillance Section */}
@@ -567,7 +743,7 @@ const StateForecastPage = ({ slug }) => {
                         }
                         .disease-nav-btn {
                             position: absolute;
-                            top: 50%;
+                            top: 150px; /* Center on mobile image (300px height) */
                             transform: translateY(-50%);
                             z-index: 30;
                             width: 4rem; /* Larger buttons */
@@ -593,14 +769,12 @@ const StateForecastPage = ({ slug }) => {
                         }
                         .disease-title-mobile {
                             display: block;
-                            position: absolute;
-                            bottom: 0;
-                            left: 0;
-                            right: 0;
-                            padding: 1.5rem;
-                            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-                            color: white;
+                            position: relative;
+                            padding: 1.5rem 2rem 0.5rem 2rem;
+                            background: white;
+                            color: #0f172a;
                             z-index: 20;
+                            border-bottom: 1px solid #f1f5f9;
                         }
 
                         @media (min-width: 768px) {
@@ -708,12 +882,12 @@ const StateForecastPage = ({ slug }) => {
                                 }}
                             />
 
-                            {/* Mobile Title Overlay */}
+                            {/* Mobile Title Overlay (Now Below Image) */}
                             <div className="disease-title-mobile">
-                                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', margin: '0 0 0.5rem 0', lineHeight: 1.1, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', margin: '0 0 0.5rem 0', lineHeight: 1.1, color: '#0f172a' }}>
                                     {tickDiseases.diseases[activeDisease].name}
                                 </h2>
-                                <p style={{ color: '#6ee7b7', fontSize: '0.95rem', fontWeight: '600', margin: 0, textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
+                                <p style={{ color: '#059669', fontSize: '0.95rem', fontWeight: '600', margin: 0 }}>
                                     Vector: {tickDiseases.diseases[activeDisease].vector}
                                 </p>
                             </div>
@@ -872,46 +1046,103 @@ const StateForecastPage = ({ slug }) => {
                     </p>
                 </div>
 
-                <FeatureGrid columns={4}>
-                    {prevention.strategies.slice(0, 4).map((strategy, idx) => (
-                        <div key={idx} className="premium-card hover-lift h-full" style={{
-                            padding: '2rem',
-                            borderLeft: strategy.priority === 'CRITICAL' ? '4px solid var(--color-red-500)' :
-                                strategy.priority === 'HIGH' ? '4px solid var(--color-amber-500)' :
-                                    '4px solid var(--color-emerald-500)',
-                            display: 'flex',
-                            flexDirection: 'column'
-                        }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                                <span className={`badge ${strategy.priority === 'CRITICAL' ? 'badge-danger' :
-                                    strategy.priority === 'HIGH' ? 'badge-warning' : 'badge-success'
-                                    }`}>
-                                    {strategy.priority} Priority
-                                </span>
-                            </div>
+                <div className="prevention-grid-container">
+                    <style>{`
+                        .prevention-grid {
+                            display: grid;
+                            grid-template-columns: repeat(4, 1fr);
+                            gap: 2rem;
+                        }
 
-                            <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--color-primary)' }}>{strategy.title}</h3>
+                        @media (max-width: 768px) {
+                            .prevention-grid {
+                                display: flex !important;
+                                overflow-x: auto;
+                                scroll-snap-type: x mandatory;
+                                gap: 1rem !important;
+                                padding-bottom: 2rem;
+                                margin: 0 -1.5rem;
+                                padding-left: 1.5rem;
+                                padding-right: 1.5rem;
+                                -webkit-overflow-scrolling: touch;
+                                cursor: grab;
+                            }
 
-                            <p className="text-sm text-secondary mb-4 flex-grow">
-                                {strategy.description}
-                            </p>
+                            .prevention-grid.active {
+                                cursor: grabbing;
+                                cursor: -webkit-grabbing;
+                                scroll-snap-type: none;
+                            }
 
-                            <div style={{
-                                background: 'var(--bg-secondary)',
-                                padding: '1rem',
-                                borderRadius: '0.5rem',
-                                fontSize: '0.875rem'
+                            /* Hide scrollbar */
+                            .prevention-grid::-webkit-scrollbar {
+                                display: none;
+                            }
+                            .prevention-grid {
+                                -ms-overflow-style: none;
+                                scrollbar-width: none;
+                            }
+
+                            .prevention-card {
+                                min-width: 80vw;
+                                scroll-snap-align: center;
+                            }
+                        }
+                    `}</style>
+
+                    <div className="scroll-indicator">
+                        Swipe to explore →
+                    </div>
+
+                    <div
+                        className="prevention-grid"
+                        ref={preventionSliderRef}
+                        onMouseDown={handlePreventionMouseDown}
+                        onMouseLeave={handlePreventionMouseLeave}
+                        onMouseUp={handlePreventionMouseUp}
+                        onMouseMove={handlePreventionMouseMove}
+                    >
+                        {prevention.strategies.slice(0, 4).map((strategy, idx) => (
+                            <div key={idx} className="premium-card hover-lift h-full prevention-card" style={{
+                                padding: '1.5rem',
+                                borderLeft: strategy.priority === 'CRITICAL' ? '4px solid var(--color-red-500)' :
+                                    strategy.priority === 'HIGH' ? '4px solid var(--color-amber-500)' :
+                                        '4px solid var(--color-emerald-500)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                background: 'white'
                             }}>
-                                <div style={{ marginBottom: '0.5rem', fontWeight: '600', color: 'var(--color-primary)' }}>
-                                    🛡️ Effectiveness: <span style={{ fontWeight: '400', color: 'var(--text-secondary)' }}>{strategy.effectiveness}</span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                                    <span className={`badge ${strategy.priority === 'CRITICAL' ? 'badge-danger' :
+                                        strategy.priority === 'HIGH' ? 'badge-warning' : 'badge-success'
+                                        }`}>
+                                        {strategy.priority} Priority
+                                    </span>
                                 </div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                                    "{strategy.whyItWorks}"
+
+                                <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--color-primary)' }}>{strategy.title}</h3>
+
+                                <p className="text-sm text-secondary mb-4 flex-grow">
+                                    {strategy.description}
+                                </p>
+
+                                <div style={{
+                                    background: 'var(--bg-secondary)',
+                                    padding: '1rem',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '0.875rem'
+                                }}>
+                                    <div style={{ marginBottom: '0.5rem', fontWeight: '600', color: 'var(--color-primary)' }}>
+                                        🛡️ Effectiveness: <span style={{ fontWeight: '400', color: 'var(--text-secondary)' }}>{strategy.effectiveness}</span>
+                                    </div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                                        "{strategy.whyItWorks}"
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </FeatureGrid>
+                        ))}
+                    </div>
+                </div>
             </Section>
 
             {/* Removal Guide - Protocol Deck Redesign */}

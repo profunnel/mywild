@@ -439,7 +439,7 @@ function ResultsPage() {
     return (
         <div className="results-container">
             <header className="results-header">
-                <button onClick={() => navigate('/')} className="back-btn">← Back</button>
+                <button onClick={() => navigate(-1)} className="back-btn">← Back</button>
                 <h1>Tick Risk Report for {city}, {state}</h1>
             </header>
 
