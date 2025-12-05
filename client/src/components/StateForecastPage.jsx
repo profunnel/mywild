@@ -6,9 +6,12 @@ import ZipInput from './ZipInput';
 import { Hero, StickyNav, Section, ContentBlock, FeatureGrid, StatCard, Accordion, Timeline } from './ui';
 import { seoMetadata, tickBiology, tickDiseases, prevention, tickRemoval } from '../content/pageContent';
 import { stateDetails } from '../content/stateContent';
+import tickSpecies from '../data/tickSpecies';
+import stateTickMapping from '../data/stateTickMapping';
 
 const StateForecastPage = ({ slug }) => {
     const [activeDisease, setActiveDisease] = useState(0);
+    const [showAllTicks, setShowAllTicks] = useState(false);
 
     // Carousel Drag Logic
     const sliderRef = useRef(null);
@@ -581,124 +584,265 @@ const StateForecastPage = ({ slug }) => {
                     </p>
                 </div>
 
-                <div className="vector-grid-container">
-                    <style>{`
-                        .vector-grid {
-                            display: grid;
-                            grid-template-columns: repeat(3, 1fr);
-                            gap: 2rem;
-                        }
-                        
-                        .scroll-indicator {
-                            display: none;
-                            text-align: right;
-                            font-size: 0.875rem;
-                            color: #64748b;
-                            margin-bottom: 0.5rem;
-                            padding-right: 1.5rem;
-                            animation: pulse 2s infinite;
-                            font-weight: 500;
-                        }
-
-                        @keyframes pulse {
-                            0%, 100% { opacity: 0.6; }
-                            50% { opacity: 1; }
-                        }
-                        
-                        @media (max-width: 768px) {
-                            .scroll-indicator {
-                                display: block;
-                            }
-
-                            .vector-grid {
-                                display: flex !important;
-                                overflow-x: auto;
-                                scroll-snap-type: x mandatory;
-                                gap: 1rem !important;
-                                padding-bottom: 2rem;
-                                margin: 0 -1.5rem;
-                                padding-left: 1.5rem;
-                                padding-right: 1.5rem;
-                                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-                                cursor: grab;
-                            }
-                            
-                            .vector-grid.active {
-                                cursor: grabbing;
-                                cursor: -webkit-grabbing;
-                                scroll-snap-type: none; /* Disable snap while dragging for smoothness */
-                            }
-                            
-                            /* Hide scrollbar for cleaner look */
-                            .vector-grid::-webkit-scrollbar {
-                                display: none;
-                            }
-                            .vector-grid {
-                                -ms-overflow-style: none;
-                                scrollbar-width: none;
-                            }
-
-                            .vector-card {
-                                min-width: 80vw;
-                                scroll-snap-align: center;
-                                border-radius: 1rem;
-                                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-                            }
-
-                            .vector-image-container {
-                                height: 260px !important;
-                            }
-                        }
-                    `}</style>
-
-                    <div className="scroll-indicator">
-                        Swipe to explore →
+                {/* Alaska Special Notice */}
+                {stateConfig.abbreviation === 'AK' && (
+                    <div className="premium-card mb-8" style={{
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        color: 'white',
+                        padding: '2rem',
+                        borderRadius: '1rem',
+                        textAlign: 'center'
+                    }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1rem' }}>Good News for Alaska!</h3>
+                        <p style={{ fontSize: '1.125rem', lineHeight: '1.8', marginBottom: '1rem' }}>
+                            Alaska has no established populations of disease-carrying tick species. The native <em>Ixodes angustus</em> poses minimal health risk to humans.
+                        </p>
+                        <p style={{ fontSize: '0.95rem', opacity: 0.9 }}>
+                            <strong>Traveler Advisory:</strong> Check pets and gear after visiting tick-endemic states before returning to Alaska.
+                        </p>
                     </div>
+                )}
 
-                    <div
-                        className="vector-grid"
-                        ref={sliderRef}
-                        onMouseDown={handleMouseDown}
-                        onMouseLeave={handleMouseLeave}
-                        onMouseUp={handleMouseUp}
-                        onMouseMove={handleMouseMove}
-                    >
-                        {tickBiology.speciesComparison.species.map((species, idx) => (
-                            <div key={idx} className="premium-card hover-lift h-full flex flex-col vector-card" style={{
-                                padding: '0',
-                                borderTop: '4px solid var(--color-emerald-500)',
-                                overflow: 'hidden',
-                                background: 'white'
-                            }}>
-                                <div className="relative shadow-sm vector-image-container" style={{ width: '100%', height: '14rem' }}>
-                                    <img
-                                        src={{
-                                            'Deer Tick / Blacklegged Tick': '/images/deer_tick.png',
-                                            'American Dog Tick': '/images/dog_tick.png',
-                                            'Lone Star Tick': '/images/lone_star_tick.png'
-                                        }[species.name] || '/images/deer_tick.png'}
-                                        alt={species.name}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                    />
+                {/* State-specific ticks */}
+                {(() => {
+                    const stateAbbrev = stateConfig.abbreviation;
+                    const stateTicks = stateTickMapping[stateAbbrev];
+
+                    if (!stateTicks) return null;
+
+                    // Gather all tick IDs
+                    const allTickIds = [
+                        ...(stateTicks.primary || []),
+                        ...(stateTicks.secondary || []),
+                        ...(stateTicks.emerging || []),
+                        ...(stateTicks.specialty || [])
+                    ];
+
+                    // Convert to tick objects and sort by priority
+                    const allTicks = allTickIds
+                        .map(id => ({
+                            ...tickSpecies[id],
+                            category: stateTicks.primary?.includes(id) ? 'primary' :
+                                stateTicks.secondary?.includes(id) ? 'secondary' :
+                                    stateTicks.emerging?.includes(id) ? 'emerging' : 'specialty'
+                        }))
+                        .filter(Boolean)
+                        .sort((a, b) => a.priority - b.priority);
+
+                    // Show only top 3 unless expanded
+                    const ticksToDisplay = showAllTicks ? allTicks : allTicks.slice(0, 3);
+                    const hasMoreTicks = allTicks.length > 3;
+
+                    const getBorderColor = (category, tickType) => {
+                        if (category === 'emerging') return '#f59e0b'; // Orange for invasive
+                        if (tickType === 'soft') return '#a855f7'; // Purple for soft ticks
+                        if (category === 'primary') return '#ef4444'; // Red for primary
+                        if (category === 'secondary') return '#fb923c'; // Light orange
+                        return '#10b981'; // Green default
+                    };
+
+                    return (
+                        <>
+
+                            <div className="vector-grid-container">
+                                <style>{`
+                                    .vector-grid {
+                                        display: grid;
+                                        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                                        gap: 2rem;
+                                    }
+                                    
+                                    .scroll-indicator {
+                                        display: none;
+                                        text-align: right;
+                                        font-size: 0.875rem;
+                                        color: #64748b;
+                                        margin-bottom: 0.5rem;
+                                        padding-right: 1.5rem;
+                                        animation: pulse 2s infinite;
+                                        font-weight: 500;
+                                    }
+
+                                    @keyframes pulse {
+                                        0%, 100% { opacity: 0.6; }
+                                        50% { opacity: 1; }
+                                    }
+                                    
+                                    @media (max-width: 768px) {
+                                        .scroll-indicator {
+                                            display: block;
+                                        }
+
+                                        .vector-grid {
+                                            display: flex !important;
+                                            overflow-x: auto;
+                                            scroll-snap-type: x mandatory;
+                                            gap: 1rem !important;
+                                            padding-bottom: 2rem;
+                                            margin: 0 -1.5rem;
+                                            padding-left: 1.5rem;
+                                            padding-right: 1.5rem;
+                                            -webkit-overflow-scrolling: touch;
+                                            cursor: grab;
+                                        }
+                                        
+                                        .vector-grid.active {
+                                            cursor: grabbing;
+                                            cursor: -webkit-grabbing;
+                                            scroll-snap-type: none;
+                                        }
+                                        
+                                        .vector-grid::-webkit-scrollbar {
+                                            display: none;
+                                        }
+                                        .vector-grid {
+                                            -ms-overflow-style: none;
+                                            scrollbar-width: none;
+                                        }
+
+                                        .vector-card {
+                                            min-width: 80vw;
+                                            scroll-snap-align: center;
+                                            border-radius: 1rem;
+                                            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+                                        }
+
+                                        .vector-image-container {
+                                            height: 260px !important;
+                                        }
+                                    }
+                                `}</style>
+
+                                <div className="scroll-indicator">
+                                    Swipe to explore →
                                 </div>
-                                <div style={{ padding: '1.5rem', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                                    <h3 className="text-xl font-bold mb-2">{species.name}</h3>
-                                    <p className="text-sm italic text-muted mb-4">
-                                        {species.scientific}
-                                    </p>
-                                    <div className="flex-grow">
-                                        <p className="mb-4 text-sm">
-                                            <strong>Appearance:</strong> {species.appearance}
-                                        </p>
-                                        <p className="text-sm text-red-600 font-medium">
-                                            <strong>Diseases:</strong> {species.diseases.join(', ')}
-                                        </p>
+
+                                <div
+                                    className="vector-grid"
+                                    ref={sliderRef}
+                                    onMouseDown={handleMouseDown}
+                                    onMouseLeave={handleMouseLeave}
+                                    onMouseUp={handleMouseUp}
+                                    onMouseMove={handleMouseMove}
+                                >
+                                    {ticksToDisplay.map((tick, idx) => (
+                                        <div key={idx} className="premium-card hover-lift h-full flex flex-col vector-card" style={{
+                                            padding: '0',
+                                            borderTop: `4px solid ${getBorderColor(tick.category, tick.tickType)}`,
+                                            overflow: 'hidden',
+                                            background: 'white',
+                                            position: 'relative'
+                                        }}>
+                                            {/* Badges */}
+                                            <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10, display: 'flex', gap: '0.5rem', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                                {tick.invasive && (
+                                                    <span style={{
+                                                        background: '#f59e0b',
+                                                        color: 'white',
+                                                        padding: '0.25rem 0.75rem',
+                                                        borderRadius: '9999px',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: '700',
+                                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                                    }}>⚠️ INVASIVE</span>
+                                                )}
+                                                {tick.tickType === 'soft' && (
+                                                    <span style={{
+                                                        background: '#a855f7',
+                                                        color: 'white',
+                                                        padding: '0.25rem 0.75rem',
+                                                        borderRadius: '9999px',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: '700',
+                                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                                    }}>🏔️ Cabins/Caves</span>
+                                                )}
+                                                {tick.category === 'primary' && (
+                                                    <span style={{
+                                                        background: '#ef4444',
+                                                        color: 'white',
+                                                        padding: '0.25rem 0.75rem',
+                                                        borderRadius: '9999px',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: '700',
+                                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                                    }}>PRIMARY THREAT</span>
+                                                )}
+                                            </div>
+
+                                            <div className="relative shadow-sm vector-image-container" style={{ width: '100%', height: '14rem' }}>
+                                                <img
+                                                    src={tick.imageUrl || '/images/deer_tick.png'}
+                                                    alt={tick.displayName}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                />
+                                            </div>
+                                            <div style={{ padding: '1.5rem', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                                                <h3 className="text-xl font-bold mb-2">{tick.displayName}</h3>
+                                                <p className="text-sm italic text-muted mb-4">
+                                                    {tick.scientificName}
+                                                </p>
+                                                <div className="flex-grow">
+                                                    <p className="mb-3 text-sm">
+                                                        <strong>Appearance:</strong> {tick.appearance}
+                                                    </p>
+                                                    <p className="mb-3 text-sm">
+                                                        <strong>Peak Season:</strong> {tick.peakSeason}
+                                                    </p>
+                                                    <p className="mb-4 text-sm">
+                                                        <strong>Habitat:</strong> {tick.habitat}
+                                                    </p>
+                                                    <p className="text-sm text-red-600 font-medium mb-3">
+                                                        <strong>Diseases:</strong> {tick.diseases.join(', ')}
+                                                    </p>
+                                                    {tick.specialNote && (
+                                                        <p className="text-sm" style={{
+                                                            background: '#fef3c7',
+                                                            padding: '0.75rem',
+                                                            borderRadius: '0.5rem',
+                                                            borderLeft: '3px solid #f59e0b'
+                                                        }}>
+                                                            <strong>Note:</strong> {tick.specialNote}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* View More Button */}
+                                {hasMoreTicks && (
+                                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+                                        <button
+                                            onClick={() => setShowAllTicks(!showAllTicks)}
+                                            className="premium-card hover-lift"
+                                            style={{
+                                                padding: '1rem 2.5rem',
+                                                background: showAllTicks ? '#f1f5f9' : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                                color: showAllTicks ? '#334155' : 'white',
+                                                border: 'none',
+                                                borderRadius: '9999px',
+                                                fontSize: '1rem',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease',
+                                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                                            }}
+                                        >
+                                            {showAllTicks ? (
+                                                <>Show Less ↑</>
+                                            ) : (
+                                                <>View {allTicks.length - 3} More Tick Species →</>
+                                            )}
+                                        </button>
                                     </div>
-                                </div>
+                                )}
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        </>
+                    );
+                })()}
             </Section>
 
             {/* Disease Surveillance Section */}
@@ -1367,3 +1511,4 @@ const StateForecastPage = ({ slug }) => {
 };
 
 export default StateForecastPage;
+

@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Circle, useMap } from 'react-leaflet';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend, ComposedChart, Bar, Scatter } from 'recharts';
 import 'leaflet/dist/leaflet.css';
 import './ResultsPage.css';
+import { supabase } from '../lib/supabase';
 
 // Helper to update map view
 function MapUpdater({ center }) {
@@ -33,6 +34,9 @@ function ResultsPage() {
     const [loading, setLoading] = useState(true);
     const [summaryText, setSummaryText] = useState(null);
     const [isSummaryLoading, setIsSummaryLoading] = useState(false);
+    const [showBanner, setShowBanner] = useState(false);
+    const [bannerDismissed, setBannerDismissed] = useState(false);
+    const [email, setEmail] = useState('');
 
     // Detect window width for responsive legend labels
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -80,6 +84,71 @@ function ResultsPage() {
             };
         }
     }, [isMobile, isVerySmall]);
+
+    // Scroll detection for sticky banner
+    useEffect(() => {
+        const handleScroll = () => {
+            if (bannerDismissed) return;
+
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollPercentage = scrollPosition / (documentHeight - windowHeight);
+
+            // Show banner when scrolled 25% down the page
+            if (scrollPercentage > 0.25) {
+                setShowBanner(true);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [bannerDismissed]);
+
+    const handleEmailSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            // Get zipcode from URL params if available
+            const zipcode = searchParams.get('zipcode') || searchParams.get('zip') || null;
+
+            // Insert email subscription into Supabase
+            const { data, error } = await supabase
+                .from('email_subscriptions')
+                .insert([
+                    {
+                        email: email,
+                        zipcode: zipcode,
+                        state: state,
+                        city: city
+                    }
+                ])
+                .select();
+
+            if (error) {
+                // Check if it's a duplicate email error
+                if (error.code === '23505') {
+                    alert(`You're already subscribed! We'll send tick risk updates to ${email}`);
+                } else {
+                    console.error('Supabase error:', error);
+                    alert('Oops! Something went wrong. Please try again later.');
+                }
+            } else {
+                // Success!
+                alert(`Thanks! We'll send tick risk updates to ${email} for ${city}, ${state}.`);
+                console.log('Email subscription saved:', data);
+            }
+
+            // Close banner after submission attempt
+            setBannerDismissed(true);
+            setShowBanner(false);
+            setEmail(''); // Clear email input
+
+        } catch (err) {
+            console.error('Error submitting email:', err);
+            alert('Oops! Something went wrong. Please try again later.');
+        }
+    };
 
     useEffect(() => {
         if (!lat || !lon) {
@@ -683,6 +752,229 @@ function ResultsPage() {
                 </div>
             </div>
 
+            {/* Sticky Email Collection Banner */}
+            {showBanner && !bannerDismissed && (
+                <div className="email-banner-mobile" style={{
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    background: 'linear-gradient(135deg, #064e3b 0%, #047857 100%)',
+                    boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
+                    padding: '1.25rem 1.5rem',
+                    zIndex: 1000,
+                    animation: 'slideUp 0.4s ease-out',
+                    borderTop: '2px solid rgba(16, 185, 129, 0.3)'
+                }}>
+                    <style>{`
+                        @keyframes slideUp {
+                            from {
+                                transform: translateY(100%);
+                                opacity: 0;
+                            }
+                            to {
+                                transform: translateY(0);
+                                opacity: 1;
+                            }
+                        }
+                        
+                        @media (max-width: 768px) {
+                            .email-banner-mobile {
+                                padding: 0.75rem 1rem 0.85rem 1rem !important;
+                            }
+                            
+                            .banner-wrapper {
+                                flex-direction: column !important;
+                                align-items: center !important;
+                                gap: 0.75rem !important;
+                            }
+                            
+                            .banner-content {
+                                flex: 1 1 100% !important;
+                                text-align: center !important;
+                            }
+                            
+                            .banner-heading {
+                                flex-direction: row !important;
+                                justify-content: center !important;
+                                align-items: center !important;
+                                gap: 0.5rem !important;
+                                margin-bottom: 0.4rem !important;
+                            }
+                            
+                            .banner-heading span {
+                                font-size: 1.25rem !important;
+                            }
+                            
+                            .banner-heading h3 {
+                                font-size: 1rem !important;
+                            }
+                            
+                            .banner-description {
+                                font-size: 0.8rem !important;
+                                line-height: 1.3 !important;
+                                margin: 0 !important;
+                            }
+                            
+                            .banner-form {
+                                flex: 1 1 100% !important;
+                                max-width: 100% !important;
+                                flex-direction: column !important;
+                                align-items: center !important;
+                                gap: 0.5rem !important;
+                            }
+                            
+                            .banner-form input {
+                                width: 100% !important;
+                                padding: 0.6rem 0.85rem !important;
+                                font-size: 0.9rem !important;
+                            }
+                            
+                            .banner-form button {
+                                width: 100% !important;
+                                padding: 0.6rem 1rem !important;
+                                font-size: 0.9rem !important;
+                            }
+                        }
+                    `}</style>
+
+                    <div className="banner-wrapper" style={{
+                        maxWidth: '1200px',
+                        margin: '0 auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2rem',
+                        flexWrap: 'wrap',
+                        justifyContent: 'space-between'
+                    }}>
+                        {/* CTA Text */}
+                        <div className="banner-content" style={{ flex: '1 1 300px' }}>
+                            <div className="banner-heading" style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.75rem',
+                                marginBottom: '0.5rem'
+                            }}>
+                                <span style={{ fontSize: '1.5rem' }}>📬</span>
+                                <h3 style={{
+                                    color: 'white',
+                                    fontSize: '1.25rem',
+                                    fontWeight: '700',
+                                    margin: 0
+                                }}>
+                                    Stay Protected in 2026
+                                </h3>
+                            </div>
+                            <p className="banner-description" style={{
+                                color: '#d1fae5',
+                                fontSize: '0.95rem',
+                                margin: 0,
+                                lineHeight: '1.5'
+                            }}>
+                                Get weekly tick activity alerts and prevention tips sent directly to your inbox for {city}, {state}.
+                            </p>
+                        </div>
+
+                        {/* Email Form */}
+                        <form onSubmit={handleEmailSubmit} className="banner-form" style={{
+                            display: 'flex',
+                            gap: '0.75rem',
+                            flex: '1 1 350px',
+                            maxWidth: '500px'
+                        }}>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your email"
+                                required
+                                style={{
+                                    flex: 1,
+                                    padding: '0.75rem 1rem',
+                                    borderRadius: '0.5rem',
+                                    border: '2px solid rgba(255,255,255,0.2)',
+                                    background: 'rgba(255,255,255,0.95)',
+                                    fontSize: '1rem',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    color: '#1f2937'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#10b981';
+                                    e.target.style.background = 'white';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = 'rgba(255,255,255,0.2)';
+                                    e.target.style.background = 'rgba(255,255,255,0.95)';
+                                }}
+                            />
+                            <button
+                                type="submit"
+                                style={{
+                                    padding: '0.75rem 1.75rem',
+                                    background: 'white',
+                                    color: '#047857',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '1rem',
+                                    fontWeight: '700',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                    whiteSpace: 'nowrap'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.transform = 'translateY(-2px)';
+                                    e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.transform = 'translateY(0)';
+                                    e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+                                }}
+                            >
+                                Subscribe →
+                            </button>
+                        </form>
+
+                        {/* Close Button */}
+                        <button
+                            onClick={() => {
+                                setBannerDismissed(true);
+                                setShowBanner(false);
+                            }}
+                            style={{
+                                position: 'absolute',
+                                top: '0.75rem',
+                                right: '0.75rem',
+                                background: 'rgba(255,255,255,0.2)',
+                                border: 'none',
+                                color: 'white',
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '1.25rem',
+                                fontWeight: '700',
+                                lineHeight: '1',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.background = 'rgba(255,255,255,0.3)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.background = 'rgba(255,255,255,0.2)';
+                            }}
+                            aria-label="Close banner"
+                        >
+                            ×
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
