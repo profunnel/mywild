@@ -10,7 +10,7 @@ const Footer = () => {
                 <div style={styles.topSection}>
                     <div style={styles.brandColumn}>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-                            <img src="/images/fieldkind-logo.png" alt="FieldKind" style={{ height: '40px', marginRight: '0.5rem' }} />
+                            <img src={`${process.env.PUBLIC_URL}/images/fieldkind-logo.png`} alt="FieldKind" style={{ height: '40px', marginRight: '0.5rem' }} />
                         </div>
                         <p style={styles.brandText}>
                             Empowering you with real-time tick activity forecasts to stay safe outdoors.
