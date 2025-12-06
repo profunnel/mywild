@@ -60,14 +60,18 @@ const TickForecast2026 = () => {
                     "headline": "2026 Tick & Vector Risk Outlook",
                     "description": "Comprehensive 2026 tick and mosquito activity forecast based on weather patterns, habitat data, and disease surveillance.",
                     "datePublished": "2024-12-01",
-                    "dateModified": "2024-12-06",
+                    "dateModified": new Date().toISOString().split('T')[0],
                     "author": {
                         "@type": "Organization",
-                        "name": "TickRisk"
+                        "name": "FieldKind"
                     },
                     "publisher": {
                         "@type": "Organization",
-                        "name": "TickRisk"
+                        "name": "FieldKind",
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": "https://fieldkind.com/images/fieldkind-logo.png"
+                        }
                     },
                     "about": [
                         {

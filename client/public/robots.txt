@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /results
+
+# Sitemap location
+Sitemap: https://fieldkind.com/sitemap.xml

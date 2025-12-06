@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
 import TickDetailModal from '../components/TickDetailModal';
 import ZipInput from '../components/ZipInput';
+import SeoMeta from '../components/SeoMeta';
 
 function LandingPage() {
     const [scrolled, setScrolled] = useState(false);
@@ -123,16 +124,50 @@ function LandingPage() {
 
     return (
         <div className="landing-container light-mode">
+            <SeoMeta
+                title="FieldKind | Real-Time Tick Forecast & Lyme Disease Risk"
+                description="Check your local tick risk with our real-time forecast. Get science-driven predictions for tick activity, Lyme disease risk, and prevention tips for your ZIP code."
+                keywords="tick forecast, tick risk, Lyme disease, tick activity, tick prevention, tick bite"
+                ogType="website"
+                schema={{
+                    "@context": "https://schema.org",
+                    "@graph": [
+                        {
+                            "@type": "WebSite",
+                            "@id": "https://fieldkind.com/#website",
+                            "url": "https://fieldkind.com",
+                            "name": "FieldKind",
+                            "description": "Real-time tick forecasts and Lyme disease risk predictions",
+                            "potentialAction": {
+                                "@type": "SearchAction",
+                                "target": "https://fieldkind.com/results?zip={search_term_string}",
+                                "query-input": "required name=search_term_string"
+                            }
+                        },
+                        {
+                            "@type": "Organization",
+                            "@id": "https://fieldkind.com/#organization",
+                            "name": "FieldKind",
+                            "url": "https://fieldkind.com",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "https://fieldkind.com/images/fieldkind-logo.png"
+                            },
+                            "sameAs": []
+                        }
+                    ]
+                }}
+            />
             <TickDetailModal tick={selectedTick} onClose={() => setSelectedTick(null)} />
             {/* Hero Section */}
             <section className="hero-section">
                 <div className="hero-overlay-light"></div>
                 <div className="hero-content fade-in-up">
                     <h1 className="hero-title">
-                        Real-Time Tick Risk in Your Area
+                        Real-Time Tick Forecast & Lyme Disease Risk
                     </h1>
                     <p className="hero-subtitle">
-                        Science-driven forecasts that reveal daily tick activity and infection risk where you live.
+                        Science-driven forecasts powered by CDC and NOAA data reveal daily tick activity and infection risk where you live.
                     </p>
                     <ZipInput />
                 </div>
@@ -234,7 +269,13 @@ function LandingPage() {
                                     onClick={() => setSelectedTick(tick)}
                                     style={{ cursor: 'pointer' }}
                                 >
-                                    <div className="tick-image" style={{ backgroundImage: `url('${tick.image}')` }}></div>
+                                    <div className="tick-image">
+                                        <img
+                                            src={tick.image}
+                                            alt={`${tick.commonName} (${tick.latinName}) - tick identification guide`}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                    </div>
                                     <div className="tick-info">
                                         <h3>{tick.commonName}</h3>
                                         <span className="latin-name">{tick.latinName}</span>

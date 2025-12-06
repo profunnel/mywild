@@ -9,9 +9,9 @@ const Footer = () => {
                 {/* Top Section: Brand, Resources, Legal */}
                 <div style={styles.topSection}>
                     <div style={styles.brandColumn}>
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-                            <img src="/images/fieldkind-logo.png" alt="FieldKind" style={{ height: '40px', marginRight: '0.5rem' }} />
-                        </div>
+                        <Link to="/" style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', textDecoration: 'none' }}>
+                            <img src="/images/fieldkind-logo.png" alt="FieldKind - Home" style={{ height: '40px', marginRight: '0.5rem', cursor: 'pointer' }} />
+                        </Link>
                         <p style={styles.brandText}>
                             Empowering you with real-time tick activity forecasts to stay safe outdoors.
                         </p>

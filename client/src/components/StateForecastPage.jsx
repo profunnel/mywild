@@ -139,27 +139,68 @@ const StateForecastPage = ({ slug }) => {
                 description={pageDescription}
                 schema={{
                     "@context": "https://schema.org",
-                    "@type": "Article",
-                    "headline": `${stateConfig.name} Tick Forecast 2026`,
-                    "description": pageDescription,
-                    "author": {
-                        "@type": "Organization",
-                        "name": "TickRisk"
-                    },
-                    "publisher": {
-                        "@type": "Organization",
-                        "name": "TickRisk",
-                        "logo": {
-                            "@type": "ImageObject",
-                            "url": "https://tickrisk.com/logo.png"
+                    "@graph": [
+                        {
+                            "@type": "Article",
+                            "headline": `${stateConfig.name} Tick Forecast 2026`,
+                            "description": pageDescription,
+                            "author": {
+                                "@type": "Organization",
+                                "name": "FieldKind"
+                            },
+                            "publisher": {
+                                "@type": "Organization",
+                                "name": "FieldKind",
+                                "logo": {
+                                    "@type": "ImageObject",
+                                    "url": "https://fieldkind.com/images/fieldkind-logo.png"
+                                }
+                            },
+                            "datePublished": "2024-12-01",
+                            "dateModified": new Date().toISOString().split('T')[0],
+                            "about": {
+                                "@type": "MedicalCondition",
+                                "name": "Lyme Disease"
+                            }
+                        },
+                        {
+                            "@type": "FAQPage",
+                            "mainEntity": [
+                                {
+                                    "@type": "Question",
+                                    "name": `When is tick season in ${stateConfig.name}?`,
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": `In ${stateConfig.name}, tick season typically runs from early spring (March-April) through late fall (October-November). Peak activity for nymphal deer ticks, which pose the highest Lyme disease risk, occurs from May through July. Adult ticks remain active whenever temperatures exceed 35°F, including during mild winter days.`
+                                    }
+                                },
+                                {
+                                    "@type": "Question",
+                                    "name": `What types of ticks are found in ${stateConfig.name}?`,
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": `The most common ticks in ${stateConfig.name} include the Blacklegged Tick (Deer Tick), which transmits Lyme disease, Anaplasmosis, and Babesiosis; the American Dog Tick, which can transmit Rocky Mountain Spotted Fever; and the Lone Star Tick, which is expanding its range and can cause Alpha-gal Syndrome (red meat allergy).`
+                                    }
+                                },
+                                {
+                                    "@type": "Question",
+                                    "name": `How can I protect myself from ticks in ${stateConfig.name}?`,
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": "Use EPA-registered insect repellents containing DEET, picaridin, or IR3535. Wear long pants and light-colored clothing when hiking. Perform thorough tick checks after outdoor activities, especially in the hairline, armpits, and groin. Shower within 2 hours of coming indoors. Consider treating outdoor clothing with permethrin."
+                                    }
+                                },
+                                {
+                                    "@type": "Question",
+                                    "name": "What should I do if I find a tick attached to my skin?",
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": "Use fine-tipped tweezers to grasp the tick as close to your skin as possible. Pull upward with steady, even pressure—do not twist or jerk. Clean the bite area with rubbing alcohol or soap and water. Save the tick in a sealed container for identification. Monitor for symptoms like rash, fever, or fatigue for 30 days and consult a doctor if they appear."
+                                    }
+                                }
+                            ]
                         }
-                    },
-                    "datePublished": "2026-01-01",
-                    "dateModified": new Date().toISOString().split('T')[0],
-                    "about": {
-                        "@type": "MedicalCondition",
-                        "name": "Lyme Disease"
-                    }
+                    ]
                 }}
             />
 

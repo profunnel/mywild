@@ -1,15 +1,21 @@
 import React from 'react';
+import SeoMeta from '../components/SeoMeta';
 
 const PrivacyPolicy = () => {
     return (
         <div style={styles.container}>
+            <SeoMeta
+                title="Privacy Policy - FieldKind"
+                description="FieldKind privacy policy. Learn how we collect, use, and protect your data when you use our tick forecast services."
+                robots="noindex, follow"
+            />
             <h1 style={styles.heading}>Privacy Policy</h1>
             <p style={styles.date}>Last Updated: {new Date().toLocaleDateString()}</p>
 
             <section style={styles.section}>
                 <h2 style={styles.subheading}>1. Introduction</h2>
                 <p style={styles.text}>
-                    Welcome to Tick Forecast. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
+                    Welcome to FieldKind. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
                 </p>
             </section>
 
@@ -58,16 +64,18 @@ const styles = {
         maxWidth: '800px',
         margin: '0 auto',
         padding: '100px 20px 40px',
-        color: '#e0e0e0',
+        color: '#333',
         fontFamily: 'Inter, sans-serif',
+        backgroundColor: '#f8fafc',
+        minHeight: '100vh',
     },
     heading: {
         fontSize: '2.5rem',
         marginBottom: '10px',
-        color: '#fff',
+        color: '#064e3b',
     },
     date: {
-        color: '#888',
+        color: '#666',
         marginBottom: '40px',
     },
     section: {
@@ -76,16 +84,16 @@ const styles = {
     subheading: {
         fontSize: '1.5rem',
         marginBottom: '15px',
-        color: '#4caf50',
+        color: '#065f46',
     },
     text: {
         lineHeight: '1.6',
-        color: '#ccc',
+        color: '#444',
         marginBottom: '15px',
     },
     list: {
         paddingLeft: '20px',
-        color: '#ccc',
+        color: '#444',
         lineHeight: '1.6',
     },
 };

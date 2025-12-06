@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import 'leaflet/dist/leaflet.css';
 import './ResultsPage.css';
 import { supabase } from '../lib/supabase';
+import SeoMeta from '../components/SeoMeta';
 
 // Helper to update map view
 function MapUpdater({ center }) {
@@ -507,6 +508,11 @@ function ResultsPage() {
 
     return (
         <div className="results-container">
+            <SeoMeta
+                title={`Tick Risk for ${city}, ${state} | Today's Forecast - FieldKind`}
+                description={`Current tick activity and Lyme disease risk for ${city}, ${state}. Check today's conditions, 7-day forecast, and personalized prevention tips.`}
+                robots="noindex, follow"
+            />
             <header className="results-header">
                 <button onClick={() => navigate(-1)} className="back-btn">← Back</button>
                 <h1>Tick Risk Report for {city}, {state}</h1>
