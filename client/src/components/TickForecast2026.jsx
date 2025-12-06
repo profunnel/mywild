@@ -405,6 +405,106 @@ const TickForecast2026 = () => {
                 </div>
             </section>
 
+            {/* Disease Surveillance & Projections */}
+            <section className="section bg-white">
+                <div className="container">
+                    <div className="section-header">
+                        <h2 className="section-title">2026 Disease Surveillance Trends</h2>
+                        <p className="section-desc">
+                            Projected case numbers and risk trends for major tick-borne diseases
+                        </p>
+                    </div>
+
+                    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+                        {Object.values(forecast2026.diseaseProjections).map((disease, idx) => (
+                            <div key={idx} style={{
+                                background: 'linear-gradient(to right, #ffffff 0%, #fef3c7 100%)',
+                                borderRadius: '16px',
+                                padding: '2rem',
+                                marginBottom: '1.5rem',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                                border: '2px solid #fbbf24',
+                                position: 'relative'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                                    <div>
+                                        <h3 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1e293b', marginBottom: '0.5rem' }}>
+                                            {disease.name}
+                                        </h3>
+                                        <div style={{ fontSize: '0.95rem', color: '#64748b' }}>
+                                            <strong>2024 Cases:</strong> {disease.cases2024}
+                                        </div>
+                                    </div>
+                                    <div style={{
+                                        background: '#dc2626',
+                                        color: 'white',
+                                        padding: '0.75rem 1.5rem',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '600',
+                                        textAlign: 'center'
+                                    }}>
+                                        {disease.projection2026}
+                                    </div>
+                                </div>
+
+                                <div style={{ marginBottom: '1.25rem' }}>
+                                    <h4 style={{ fontSize: '0.95rem', fontWeight: '600', color: '#0f766e', marginBottom: '0.5rem' }}>
+                                        Why This Projection?
+                                    </h4>
+                                    <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#475569' }}>
+                                        {disease.reasoning}
+                                    </p>
+                                </div>
+
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                    gap: '1rem',
+                                    padding: '1rem',
+                                    background: 'rgba(255,255,255,0.8)',
+                                    borderRadius: '12px',
+                                    fontSize: '0.9rem'
+                                }}>
+                                    <div>
+                                        <strong style={{ color: '#0f766e', display: 'block', marginBottom: '0.25rem' }}>Symptoms:</strong>
+                                        <span style={{ color: '#475569' }}>{disease.symptoms}</span>
+                                    </div>
+                                    <div>
+                                        <strong style={{ color: '#0f766e', display: 'block', marginBottom: '0.25rem' }}>Peak Risk:</strong>
+                                        <span style={{ color: '#475569' }}>{disease.peakRisk}</span>
+                                    </div>
+                                    <div>
+                                        <strong style={{ color: '#0f766e', display: 'block', marginBottom: '0.25rem' }}>Prevention:</strong>
+                                        <span style={{ color: '#475569' }}>{disease.prevention}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{
+                        maxWidth: '800px',
+                        margin: '3rem auto 0',
+                        padding: '2rem',
+                        background: '#fef2f2',
+                        borderLeft: '6px solid #dc2626',
+                        borderRadius: '12px'
+                    }}>
+                        <h3 style={{ fontSize: '1.3rem', fontWeight: '700', color: '#991b1b', marginBottom: '1rem' }}>
+                            ⚠️ Early Detection is Critical
+                        </h3>
+                        <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#7f1d1d', marginBottom: '1rem' }}>
+                            Most tick-borne diseases are treatable when caught early. If you develop fever, rash, or flu-like symptoms
+                            within 30 days of a tick bite or outdoor activity in tick habitat, seek medical attention immediately.
+                        </p>
+                        <p style={{ fontSize: '0.95rem', fontWeight: '600', color: '#991b1b' }}>
+                            Tell your doctor about potential tick exposure — it can guide faster diagnosis and treatment.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* Regional Links Section */}
             <section className="section bg-cream">
                 <div className="container">
