@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { states } from '../statesConfig';
 import SeoMeta from './SeoMeta';
@@ -14,6 +14,38 @@ const TickForecast2026 = () => {
     const [activeDisease, setActiveDisease] = useState(0);
     const [activeRegion, setActiveRegion] = useState('northeast');
     const [activeTimelineMonth, setActiveTimelineMonth] = useState(4); // May (index 4)
+    const [showAllTicks, setShowAllTicks] = useState(false);
+
+    // Carousel Drag Logic for tick species
+    const sliderRef = useRef(null);
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    const handleMouseDown = (e) => {
+        isDown = true;
+        sliderRef.current.classList.add('active');
+        startX = e.pageX - sliderRef.current.offsetLeft;
+        scrollLeft = sliderRef.current.scrollLeft;
+    };
+
+    const handleMouseLeave = () => {
+        isDown = false;
+        if (sliderRef.current) sliderRef.current.classList.remove('active');
+    };
+
+    const handleMouseUp = () => {
+        isDown = false;
+        if (sliderRef.current) sliderRef.current.classList.remove('active');
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - sliderRef.current.offsetLeft;
+        const walk = (x - startX) * 2;
+        sliderRef.current.scrollLeft = scrollLeft - walk;
+    };
 
     const regions = Object.values(forecast2026.regionalOutlook);
 
@@ -832,126 +864,171 @@ const TickForecast2026 = () => {
             </section>
 
             {/* Tick Species Identification */}
-            <section className="section bg-white">
-                <div className="container">
-                    <div className="section-header">
-                        <h2 className="section-title">Know Your Ticks: Species Identification Guide</h2>
-                        <p className="section-desc">
-                            Learn to identify the most common tick species in the United States — critical for assessing disease risk
-                        </p>
+            <Section variant="sage" id="biology">
+                <div className="text-center max-w-3xl mx-auto mb-12">
+                    <h2 className="section-title">Know Your Ticks: Complete US Species Guide</h2>
+                    <p className="text-lg text-secondary">
+                        Understanding which ticks carry which diseases helps you identify threats and take appropriate precautions. Explore all major tick species found across the United States.
+                    </p>
+                </div>
+
+                <div className="vector-grid-container">
+                    <style>{`
+                        .vector-grid {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                            gap: 2rem;
+                        }
+                        
+                        .scroll-indicator {
+                            display: none;
+                            text-align: right;
+                            font-size: 0.875rem;
+                            color: #64748b;
+                            margin-bottom: 0.5rem;
+                            padding-right: 1.5rem;
+                            animation: pulse 2s infinite;
+                            font-weight: 500;
+                        }
+
+                        @keyframes pulse {
+                            0%, 100% { opacity: 0.6; }
+                            50% { opacity: 1; }
+                        }
+                        
+                        @media (max-width: 768px) {
+                            .scroll-indicator {
+                                display: block;
+                            }
+
+                            .vector-grid {
+                                display: flex !important;
+                                overflow-x: auto;
+                                scroll-snap-type: x mandatory;
+                                gap: 1rem !important;
+                                padding-bottom: 2rem;
+                                margin: 0 -1.5rem;
+                                padding-left: 1.5rem;
+                                padding-right: 1.5rem;
+                                -webkit-overflow-scrolling: touch;
+                                cursor: grab;
+                            }
+                            
+                            .vector-grid.active {
+                                cursor: grabbing;
+                                cursor: -webkit-grabbing;
+                                scroll-snap-type: none;
+                            }
+                            
+                            .vector-grid::-webkit-scrollbar {
+                                display: none;
+                            }
+                            .vector-grid {
+                                -ms-overflow-style: none;
+                                scrollbar-width: none;
+                            }
+
+                            .vector-card {
+                                min-width: 80vw;
+                                scroll-snap-align: center;
+                                border-radius: 1rem;
+                                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+                            }
+
+                            .vector-image-container {
+                                height: 260px !important;
+                            }
+                        }
+                    `}</style>
+
+                    <div className="scroll-indicator">
+                        Swipe to explore →
                     </div>
 
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                        gap: '2rem',
-                        maxWidth: '1200px',
-                        margin: '0 auto'
-                    }}>
-                        {Object.values(tickSpecies).slice(0, 10).map((tick, idx) => (
-                            <div key={idx} style={{
-                                background: 'white',
-                                borderRadius: '16px',
+                    <div
+                        className="vector-grid"
+                        ref={sliderRef}
+                        onMouseDown={handleMouseDown}
+                        onMouseLeave={handleMouseLeave}
+                        onMouseUp={handleMouseUp}
+                        onMouseMove={handleMouseMove}
+                    >
+                        {Object.values(tickSpecies).map((tick, idx) => (
+                            <div key={idx} className="premium-card hover-lift h-full flex flex-col vector-card" style={{
+                                padding: '0',
+                                borderTop: `4px solid ${tick.invasive ? '#f59e0b' : tick.tickType === 'soft' ? '#a855f7' : '#10b981'}`,
                                 overflow: 'hidden',
-                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                                border: '2px solid #e5e7eb'
-                            }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
-                                }}
-                            >
-                                <div style={{
-                                    height: '220px',
-                                    background: '#f8fafc',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    padding: '1rem'
-                                }}>
-                                    {tick.imagePath ? (
-                                        <img
-                                            src={tick.imagePath}
-                                            alt={tick.name}
-                                            style={{
-                                                maxWidth: '100%',
-                                                maxHeight: '100%',
-                                                objectFit: 'contain'
-                                            }}
-                                        />
-                                    ) : (
-                                        <div style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Image unavailable</div>
+                                background: 'white',
+                                position: 'relative'
+                            }}>
+                                {/* Badges */}
+                                <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10, display: 'flex', gap: '0.5rem', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    {tick.invasive && (
+                                        <span style={{
+                                            background: '#f59e0b',
+                                            color: 'white',
+                                            padding: '0.25rem 0.75rem',
+                                            borderRadius: '9999px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: '700',
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                        }}>⚠️ INVASIVE</span>
+                                    )}
+                                    {tick.tickType === 'soft' && (
+                                        <span style={{
+                                            background: '#a855f7',
+                                            color: 'white',
+                                            padding: '0.25rem 0.75rem',
+                                            borderRadius: '9999px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: '700',
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                        }}>🏔️ Cabins/Caves</span>
                                     )}
                                 </div>
 
-                                <div style={{ padding: '1.5rem' }}>
-                                    <h3 style={{
-                                        fontSize: '1.2rem',
-                                        fontWeight: '700',
-                                        color: '#1e293b',
-                                        marginBottom: '0.5rem'
-                                    }}>
-                                        {tick.name}
-                                    </h3>
-                                    <p style={{
-                                        fontSize: '0.85rem',
-                                        fontStyle: 'italic',
-                                        color: '#64748b',
-                                        marginBottom: '0.75rem'
-                                    }}>
+                                <div className="relative shadow-sm vector-image-container" style={{ width: '100%', height: '14rem' }}>
+                                    <img
+                                        src={tick.imageUrl || '/images/deer_tick.png'}
+                                        alt={tick.displayName}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                </div>
+                                <div style={{ padding: '1.5rem', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                                    <h3 className="text-xl font-bold mb-2">{tick.displayName}</h3>
+                                    <p className="text-sm italic text-muted mb-4">
                                         {tick.scientificName}
                                     </p>
-
-                                    {tick.diseases && tick.diseases.length > 0 && (
-                                        <div style={{ marginBottom: '1rem' }}>
-                                            <strong style={{ fontSize: '0.85rem', color: '#dc2626', display: 'block', marginBottom: '0.5rem' }}>
-                                                Transmits:
-                                            </strong>
-                                            <div style={{ fontSize: '0.85rem', lineHeight: '1.6', color: '#475569' }}>
-                                                {tick.diseases.join(', ')}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {tick.regions && tick.regions.length > 0 && (
-                                        <div>
-                                            <strong style={{ fontSize: '0.85rem', color: '#0f766e', display: 'block', marginBottom: '0.5rem' }}>
-                                                Found in:
-                                            </strong>
-                                            <div style={{ fontSize: '0.85rem', color: '#475569' }}>
-                                                {tick.regions.join(', ')}
-                                            </div>
-                                        </div>
-                                    )}
+                                    <div className="flex-grow">
+                                        <p className="mb-3 text-sm">
+                                            <strong>Appearance:</strong> {tick.appearance}
+                                        </p>
+                                        <p className="mb-3 text-sm">
+                                            <strong>Peak Season:</strong> {tick.peakSeason}
+                                        </p>
+                                        <p className="mb-4 text-sm">
+                                            <strong>Habitat:</strong> {tick.habitat}
+                                        </p>
+                                        <p className="text-sm text-red-600 font-medium mb-3">
+                                            <strong>Diseases:</strong> {tick.diseases.join(', ')}
+                                        </p>
+                                        {tick.specialNote && (
+                                            <p className="text-sm" style={{
+                                                background: '#fef3c7',
+                                                padding: '0.75rem',
+                                                borderRadius: '0.5rem',
+                                                borderLeft: '3px solid #f59e0b'
+                                            }}>
+                                                <strong>Note:</strong> {tick.specialNote}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
-
-                    <div style={{
-                        maxWidth: '800px',
-                        margin: '3rem auto 0',
-                        padding: '2rem',
-                        background: '#eff6ff',
-                        borderRadius: '16px',
-                        border: '2px solid #3b82f6'
-                    }}>
-                        <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#1e40af', marginBottom: '1rem' }}>
-                            💡 Identification Tip
-                        </h3>
-                        <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#1e3a8a' }}>
-                            Tick size varies dramatically by life stage and feeding status. Nymphs (adolescent ticks) are the size of
-                            a poppy seed and responsible for most Lyme disease transmission. Adult ticks are easier to spot but still
-                            dangerous. Always check carefully after outdoor activities.
-                        </p>
-                    </div>
                 </div>
-            </section>
+            </Section>
 
             {/* Prevention Best Practices */}
             <section className="section bg-white">
