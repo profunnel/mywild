@@ -326,80 +326,151 @@ const TickForecast2026 = () => {
                     <div className="section-header">
                         <h2 className="section-title">2026 Monthly Activity Timeline</h2>
                         <p className="section-desc">
-                            Track tick activity levels and recommended preventive actions throughout the year
+                            Click through each month to see activity levels and prevention actions
                         </p>
                     </div>
 
-                    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+                    {/* Month Tabs */}
+                    <div style={{
+                        display: 'flex',
+                        gap: '0.5rem',
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
+                        marginBottom: '2rem',
+                        maxWidth: '1000px',
+                        margin: '0 auto 2rem'
+                    }}>
                         {forecast2026.timeline2026.map((month, idx) => (
-                            <div key={idx} style={{
-                                background: 'white',
-                                borderRadius: '16px',
-                                padding: '1.75rem',
-                                marginBottom: '1.25rem',
-                                boxShadow: '0 2px 15px rgba(0,0,0,0.08)',
-                                border: month.activity === 'Very High' ? '3px solid #dc2626' : month.activity.includes('High') ? '2px solid #f59e0b' : '1px solid #e5e7eb',
-                                position: 'relative',
-                                overflow: 'hidden'
-                            }}>
-                                {/* Activity Badge */}
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '1rem',
-                                    right: '1rem',
-                                    padding: '0.5rem 1rem',
-                                    borderRadius: '9999px',
-                                    fontSize: '0.85rem',
+                            <button
+                                key={idx}
+                                onClick={() => setActiveTimelineMonth(idx)}
+                                style={{
+                                    padding: '0.75rem 1.25rem',
+                                    background: activeTimelineMonth === idx ? (month.activity === 'Very High' ? '#dc2626' : month.activity.includes('High') ? '#f59e0b' : '#10b981') : '#f8fafc',
+                                    color: activeTimelineMonth === idx ? 'white' : '#475569',
+                                    border: activeTimelineMonth === idx ? 'none' : '2px solid #e2e8f0',
+                                    borderRadius: '12px',
+                                    fontSize: '0.95rem',
                                     fontWeight: '600',
-                                    background: month.activity === 'Very High' ? '#dc2626' :
-                                        month.activity.includes('High') ? '#f59e0b' :
-                                            month.activity === 'Moderate' ? '#fb923c' : '#10b981',
-                                    color: 'white'
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s ease',
+                                    minWidth: '120px'
+                                }}
+                            >
+                                {month.month.split(' ')[0]}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Active Month Display */}
+                    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+                        {forecast2026.timeline2026.map((month, idx) => (
+                            activeTimelineMonth === idx && (
+                                <div key={idx} style={{
+                                    background: 'white',
+                                    borderRadius: '20px',
+                                    padding: '2.5rem',
+                                    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+                                    border: month.activity === 'Very High' ? '4px solid #dc2626' : month.activity.includes('High') ? '3px solid #f59e0b' : '2px solid #e5e7eb',
+                                    position: 'relative'
                                 }}>
-                                    {month.activity} Activity
-                                </div>
-
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem', color: '#1e293b' }}>
-                                        {month.month}
-                                    </h3>
-                                    <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#2e7d32', marginBottom: '0.75rem' }}>
-                                        {month.title}
-                                    </h4>
-                                    <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#475569' }}>
-                                        {month.description}
-                                    </p>
-                                </div>
-
-                                <div style={{ paddingTop: '1rem', borderTop: '2px solid #f1f5f9' }}>
-                                    <h5 style={{ fontSize: '0.9rem', fontWeight: '600', color: '#64748b', marginBottom: '0.75rem', textTransform: 'uppercase' }}>
-                                        Recommended Actions:
-                                    </h5>
-                                    <ul style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                                        gap: '0.5rem',
-                                        listStyle: 'none',
-                                        padding: 0,
-                                        margin: 0
+                                    {/* Activity Badge */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '1rem',
+                                        right: '1rem',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.85rem',
+                                        fontWeight: '600',
+                                        background: month.activity === 'Very High' ? '#dc2626' :
+                                            month.activity.includes('High') ? '#f59e0b' :
+                                                month.activity === 'Moderate' ? '#fb923c' : '#10b981',
+                                        color: 'white'
                                     }}>
-                                        {month.actions.map((action, i) => (
-                                            <li key={i} style={{
-                                                padding: '0.5rem 0.75rem',
-                                                background: '#f8fafc',
-                                                borderRadius: '8px',
-                                                fontSize: '0.9rem',
-                                                display: 'flex',
-                                                alignItems: 'start',
-                                                gap: '0.5rem'
-                                            }}>
-                                                <span style={{ color: '#2e7d32', fontWeight: '600', flexShrink: 0 }}>✓</span>
-                                                <span>{action}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                        {month.activity} Activity
+                                    </div>
+
+                                    <div style={{ marginBottom: '2rem', paddingRight: '200px' }}>
+                                        <h3 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.75rem', color: '#1e293b' }}>
+                                            {month.month}
+                                        </h3>
+                                        <h4 style={{ fontSize: '1.4rem', fontWeight: '600', color: '#2e7d32', marginBottom: '1rem' }}>
+                                            {month.title}
+                                        </h4>
+                                        <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#475569' }}>
+                                            {month.description}
+                                        </p>
+                                    </div>
+
+                                    <div style={{ paddingTop: '1.5rem', borderTop: '3px solid #f1f5f9' }}>
+                                        <h5 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f766e', marginBottom: '1rem', textTransform: 'uppercase' }}>
+                                            ✓ Recommended Actions:
+                                        </h5>
+                                        <ul style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                                            gap: '1rem',
+                                            listStyle: 'none',
+                                            padding: 0,
+                                            margin: 0
+                                        }}>
+                                            {month.actions.map((action, i) => (
+                                                <li key={i} style={{
+                                                    padding: '1rem 1.25rem',
+                                                    background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                                                    borderRadius: '12px',
+                                                    fontSize: '0.95rem',
+                                                    display: 'flex',
+                                                    alignItems: 'start',
+                                                    gap: '0.75rem',
+                                                    border: '1px solid #bae6fd',
+                                                    lineHeight: '1.6'
+                                                }}>
+                                                    <span style={{ color: '#0f766e', fontWeight: '700', fontSize: '1.2rem', flexShrink: 0 }}>✓</span>
+                                                    <span style={{ color: '#0c4a6e' }}>{action}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    {/* Navigation */}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '2px solid #f1f5f9' }}>
+                                        <button
+                                            onClick={() => setActiveTimelineMonth(Math.max(0, idx - 1))}
+                                            disabled={idx === 0}
+                                            style={{
+                                                padding: '0.75rem 1.5rem',
+                                                background: idx === 0 ? '#e5e7eb' : '#3b82f6',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '9999px',
+                                                fontSize: '0.95rem',
+                                                fontWeight: '600',
+                                                cursor: idx === 0 ? 'not-allowed' : 'pointer'
+                                            }}
+                                        >
+                                            ← Previous
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTimelineMonth(Math.min(11, idx + 1))}
+                                            disabled={idx === 11}
+                                            style={{
+                                                padding: '0.75rem 1.5rem',
+                                                background: idx === 11 ? '#e5e7eb' : '#3b82f6',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '9999px',
+                                                fontSize: '0.95rem',
+                                                fontWeight: '600',
+                                                cursor: idx === 11 ? 'not-allowed' : 'pointer'
+                                            }}
+                                        >
+                                            Next →
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            )
                         ))}
                     </div>
                 </div>
