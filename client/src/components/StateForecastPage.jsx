@@ -575,6 +575,33 @@ const StateForecastPage = ({ slug }) => {
                 </div>
             </Section >
 
+            {/* Mid-Page CTA - ZIP Code Checker */}
+            <section className="section" style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0f766e 100%)',
+                textAlign: 'center',
+                padding: '4rem 2rem'
+            }}>
+                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    <h2 style={{
+                        fontSize: '2rem',
+                        fontWeight: '800',
+                        color: 'white',
+                        marginBottom: '1rem'
+                    }}>
+                        Check Your Local Tick Risk
+                    </h2>
+                    <p style={{
+                        fontSize: '1.125rem',
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        marginBottom: '2rem',
+                        lineHeight: '1.6'
+                    }}>
+                        Ready to see current tick activity in your area? Get today's tick forecast and personalized risk assessment for your ZIP code.
+                    </p>
+                    <ZipInput buttonText="Get Your Local Forecast" />
+                </div>
+            </section>
+
             {/* Know Your Enemy - Biology */}
             < Section variant="sage" id="biology" >
                 <div className="text-center max-w-3xl mx-auto mb-12">
