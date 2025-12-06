@@ -540,7 +540,129 @@ const TickForecast2026 = () => {
                 </div>
             </section>
 
-            {/* Prevention Section */}
+            {/* Tick Species Identification */}
+            <section className="section bg-white">
+                <div className="container">
+                    <div className="section-header">
+                        <h2 className="section-title">Know Your Ticks: Species Identification Guide</h2>
+                        <p className="section-desc">
+                            Learn to identify the most common tick species in the United States — critical for assessing disease risk
+                        </p>
+                    </div>
+
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gap: '2rem',
+                        maxWidth: '1200px',
+                        margin: '0 auto'
+                    }}>
+                        {Object.values(tickSpecies).slice(0, 10).map((tick, idx) => (
+                            <div key={idx} style={{
+                                background: 'white',
+                                borderRadius: '16px',
+                                overflow: 'hidden',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                                border: '2px solid #e5e7eb'
+                            }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-8px)';
+                                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+                                }}
+                            >
+                                <div style={{
+                                    height: '220px',
+                                    background: '#f8fafc',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '1rem'
+                                }}>
+                                    {tick.imagePath ? (
+                                        <img
+                                            src={tick.imagePath}
+                                            alt={tick.name}
+                                            style={{
+                                                maxWidth: '100%',
+                                                maxHeight: '100%',
+                                                objectFit: 'contain'
+                                            }}
+                                        />
+                                    ) : (
+                                        <div style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Image unavailable</div>
+                                    )}
+                                </div>
+
+                                <div style={{ padding: '1.5rem' }}>
+                                    <h3 style={{
+                                        fontSize: '1.2rem',
+                                        fontWeight: '700',
+                                        color: '#1e293b',
+                                        marginBottom: '0.5rem'
+                                    }}>
+                                        {tick.name}
+                                    </h3>
+                                    <p style={{
+                                        fontSize: '0.85rem',
+                                        fontStyle: 'italic',
+                                        color: '#64748b',
+                                        marginBottom: '0.75rem'
+                                    }}>
+                                        {tick.scientificName}
+                                    </p>
+
+                                    {tick.diseases && tick.diseases.length > 0 && (
+                                        <div style={{ marginBottom: '1rem' }}>
+                                            <strong style={{ fontSize: '0.85rem', color: '#dc2626', display: 'block', marginBottom: '0.5rem' }}>
+                                                Transmits:
+                                            </strong>
+                                            <div style={{ fontSize: '0.85rem', lineHeight: '1.6', color: '#475569' }}>
+                                                {tick.diseases.join(', ')}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {tick.regions && tick.regions.length > 0 && (
+                                        <div>
+                                            <strong style={{ fontSize: '0.85rem', color: '#0f766e', display: 'block', marginBottom: '0.5rem' }}>
+                                                Found in:
+                                            </strong>
+                                            <div style={{ fontSize: '0.85rem', color: '#475569' }}>
+                                                {tick.regions.join(', ')}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{
+                        maxWidth: '800px',
+                        margin: '3rem auto 0',
+                        padding: '2rem',
+                        background: '#eff6ff',
+                        borderRadius: '16px',
+                        border: '2px solid #3b82f6'
+                    }}>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#1e40af', marginBottom: '1rem' }}>
+                            💡 Identification Tip
+                        </h3>
+                        <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#1e3a8a' }}>
+                            Tick size varies dramatically by life stage and feeding status. Nymphs (adolescent ticks) are the size of
+                            a poppy seed and responsible for most Lyme disease transmission. Adult ticks are easier to spot but still
+                            dangerous. Always check carefully after outdoor activities.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* Prevention Best Practices */}
             <section className="section bg-white">
                 <div className="container">
                     <div className="section-header">
@@ -564,16 +686,55 @@ const TickForecast2026 = () => {
                 </div>
             </section>
 
-            {/* Footer CTA */}
-            <section className="section bg-dark text-white" style={{ textAlign: 'center' }}>
-                <div className="container">
-                    <h2 className="section-title" style={{ color: '#fff' }}>{sharedContent.footerCTA.title}</h2>
-                    <p className="section-desc" style={{ color: '#ccc' }}>
-                        {sharedContent.footerCTA.body}
+            {/* Footer CTA - 2026 Specific */}
+            <section className="section" style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0f766e 100%)',
+                textAlign: 'center',
+                position: 'relative',
+                overflow: 'hidden'
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'url(/images/footer-cta-background.png) center/cover',
+                    opacity: 0.1
+                }} />
+
+                <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+                    <h2 style={{
+                        fontSize: '2.5rem',
+                        fontWeight: '800',
+                        color: 'white',
+                        marginBottom: '1rem',
+                        textShadow: '0 2px 20px rgba(0,0,0,0.3)'
+                    }}>
+                        Get Your Personalized 2026 Tick Risk Forecast
+                    </h2>
+                    <p style={{
+                        fontSize: '1.2rem',
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        marginBottom: '2.5rem',
+                        maxWidth: '700px',
+                        margin: '0 auto 2.5rem',
+                        lineHeight: '1.6'
+                    }}>
+                        Enter your ZIP code to receive a detailed local forecast powered by weather data,
+                        tick surveillance, and disease tracking for your specific area.
                     </p>
                     <div style={{ marginTop: '30px' }}>
-                        <ZipInput />
+                        <ZipInput buttonText="Check My Local 2026 Risk" />
                     </div>
+                    <p style={{
+                        marginTop: '2rem',
+                        fontSize: '0.9rem',
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontWeight: '500'
+                    }}>
+                        Join thousands staying informed • Updated monthly • 100% Free
+                    </p>
                 </div>
             </section>
         </div>
