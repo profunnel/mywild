@@ -945,7 +945,7 @@ const TickForecast2026 = () => {
                         gap: '1.5rem',
                         marginTop: '2.5rem'
                     }}>
-                        {states.map((state) => {
+                        {[...states].sort((a, b) => a.name.localeCompare(b.name)).map((state) => {
                             // Determine risk level based on region
                             const getRiskLevel = (region) => {
                                 const regionLower = region.toLowerCase();
