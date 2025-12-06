@@ -177,7 +177,7 @@ const StateForecastPage = ({ slug }) => {
                         marginTop: '1rem',
                         fontWeight: '500'
                     }}>
-                        Updated daily using CDC and NOAA data.
+                        Powered by real-time CDC and NOAA data
                     </p>
                 </div>
             </Hero>
