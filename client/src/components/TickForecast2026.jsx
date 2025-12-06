@@ -111,7 +111,7 @@ const TickForecast2026 = () => {
                             marginTop: '1rem',
                             fontWeight: '500'
                         }}>
-                            Updated Live
+                            Updated live using CDC and NOAA data
                         </p>
                     </div>
                 </div>
