@@ -90,21 +90,6 @@ const TickForecast2026 = () => {
                 background: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(/images/hero-2026.png) center/cover no-repeat'
             }}>
                 <div className="hero-content fade-in-up">
-                    {/* Last Updated Badge */}
-                    <div style={{
-                        display: 'inline-block',
-                        padding: '0.5rem 1rem',
-                        background: 'rgba(255, 255, 255, 0.15)',
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: '9999px',
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.95)',
-                        marginBottom: '1.5rem',
-                        border: '1px solid rgba(255, 255, 255, 0.2)'
-                    }}>
-                        📅 Last Updated: December 2024
-                    </div>
                     <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>
                         2026 Tick & Vector Risk Outlook
                     </h1>
