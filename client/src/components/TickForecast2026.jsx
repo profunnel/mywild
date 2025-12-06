@@ -838,27 +838,148 @@ const TickForecast2026 = () => {
                         </p>
                     </div>
 
+                    <style>{`
+                        .state-link-card {
+                            position: relative;
+                            background: white;
+                            border-radius: 16px;
+                            padding: 1.5rem;
+                            text-decoration: none;
+                            color: inherit;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            border: 2px solid transparent;
+                            overflow: hidden;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                        }
+
+                        .state-link-card:hover {
+                            transform: translateY(-4px);
+                            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                        }
+
+                        .state-link-card.risk-high {
+                            border-color: #dc2626;
+                        }
+
+                        .state-link-card.risk-high:hover {
+                            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.2);
+                        }
+
+                        .state-link-card.risk-moderate {
+                            border-color: #f59e0b;
+                        }
+
+                        .state-link-card.risk-moderate:hover {
+                            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
+                        }
+
+                        .state-link-card.risk-low {
+                            border-color: #10b981;
+                        }
+
+                        .state-link-card.risk-low:hover {
+                            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+                        }
+
+                        .state-link-card.risk-minimal {
+                            border-color: #3b82f6;
+                        }
+
+                        .state-link-card.risk-minimal:hover {
+                            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+                        }
+
+                        .risk-badge {
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                            padding: 0.375rem 0.875rem;
+                            border-radius: 9999px;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                            text-transform: uppercase;
+                            letter-spacing: 0.05em;
+                        }
+
+                        .risk-badge.high {
+                            background: #fef2f2;
+                            color: #991b1b;
+                        }
+
+                        .risk-badge.moderate {
+                            background: #fef3c7;
+                            color: #92400e;
+                        }
+
+                        .risk-badge.low {
+                            background: #d1fae5;
+                            color: #065f46;
+                        }
+
+                        .risk-badge.minimal {
+                            background: #dbeafe;
+                            color: #1e40af;
+                        }
+
+                        .state-name {
+                            font-size: 1.25rem;
+                            font-weight: 700;
+                            color: #1e293b;
+                            margin-top: 0.75rem;
+                        }
+
+                        .state-link-text {
+                            color: #64748b;
+                            font-size: 0.875rem;
+                            margin-top: 0.5rem;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.25rem;
+                        }
+                    `}</style>
+
                     <div style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                        gap: '20px',
-                        marginTop: '40px'
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                        gap: '1.5rem',
+                        marginTop: '2.5rem'
                     }}>
-                        {states.map((state) => (
-                            <Link
-                                key={state.slug}
-                                to={`/tick-forecast-${state.slug}`}
-                                style={{
-                                    textDecoration: 'none',
-                                    color: 'inherit'
-                                }}
-                            >
-                                <div className="card-light" style={{ textAlign: 'center', cursor: 'pointer', transition: 'transform 0.2s' }}>
-                                    <h3 style={{ color: '#2e7d32', marginBottom: '10px' }}>{state.name}</h3>
-                                    <p style={{ fontSize: '0.9rem', color: '#666' }}>View 2026 Forecast &rarr;</p>
-                                </div>
-                            </Link>
-                        ))}
+                        {states.map((state) => {
+                            // Determine risk level based on region
+                            const getRiskLevel = (region) => {
+                                const regionLower = region.toLowerCase();
+                                if (regionLower.includes('northeast') || regionLower.includes('mid-atlantic')) {
+                                    return { level: 'high', label: 'High Risk', icon: '🔴' };
+                                } else if (regionLower.includes('midwest') || regionLower.includes('southeast')) {
+                                    return { level: 'moderate', label: 'Moderate', icon: '🟡' };
+                                } else if (regionLower.includes('south') || regionLower.includes('west')) {
+                                    return { level: 'low', label: 'Lower Risk', icon: '🟢' };
+                                } else {
+                                    return { level: 'minimal', label: 'Minimal', icon: '🔵' };
+                                }
+                            };
+
+                            const risk = getRiskLevel(state.riskRegion);
+
+                            return (
+                                <Link
+                                    key={state.slug}
+                                    to={`/tick-forecast-${state.slug}`}
+                                    className={`state-link-card risk-${risk.level}`}
+                                >
+                                    <div className={`risk-badge ${risk.level}`}>
+                                        <span>{risk.icon}</span>
+                                        <span>{risk.label}</span>
+                                    </div>
+                                    <h3 className="state-name">{state.name}</h3>
+                                    <p className="state-link-text">
+                                        <span>View 2026 Forecast</span>
+                                        <span>→</span>
+                                    </p>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
