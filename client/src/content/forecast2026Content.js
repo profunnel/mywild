@@ -129,6 +129,30 @@ export const forecast2026 = {
 
     timeline2026: [
         {
+            month: 'January 2026',
+            title: 'Winter Dormancy',
+            activity: 'Very Low',
+            description: 'Minimal tick activity during coldest month. Adult Blacklegged ticks can occasionally be active on warm winter days above 35°F.',
+            actions: [
+                'Stay vigilant on unseasonably warm days',
+                'Keep tick removal tools accessible',
+                'Review prevention strategies for upcoming season',
+                'Plan yard improvements for tick habitat reduction'
+            ]
+        },
+        {
+            month: 'February 2026',
+            title: 'Late Winter Preparation',
+            activity: 'Very Low',
+            description: 'Activity remains low but begins increasing toward month end. Prepare for spring tick season with preventive measures.',
+            actions: [
+                'Order permethrin spray for clothing',
+                'Stock up on tick repellents',
+                'Schedule yard cleanup for early March',
+                'Check pets for ticks on warmer days'
+            ]
+        },
+        {
             month: 'March 2026',
             title: 'Early Activity Begins',
             activity: 'Low',

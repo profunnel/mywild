@@ -363,43 +363,82 @@ const TickForecast2026 = () => {
                         </p>
                     </div>
 
+                    <style>{`
+                        .month-tabs-container {
+                            display: flex;
+                            gap: 0.5rem;
+                            flex-wrap: wrap;
+                            justify-content: center;
+                            margin-bottom: 2rem;
+                            max-width: 1000px;
+                            margin: 0 auto 2rem;
+                        }
+
+                        .month-tab-btn {
+                            padding: 0.75rem 1.25rem;
+                            background: #f8fafc;
+                            color: #475569;
+                            border: 2px solid #e2e8f0;
+                            border-radius: 12px;
+                            font-size: 0.95rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            min-width: 120px;
+                            white-space: nowrap;
+                        }
+
+                        .month-tab-btn.active {
+                            color: white;
+                            border: none;
+                        }
+
+                        @media (max-width: 768px) {
+                            .month-tabs-container {
+                                gap: 0.375rem;
+                                margin: 0 -0.5rem 1.5rem;
+                                padding: 0 0.5rem;
+                            }
+
+                            .month-tab-btn {
+                                padding: 0.5rem 0.75rem;
+                                font-size: 0.85rem;
+                                min-width: auto;
+                                flex: 0 0 auto;
+                            }
+                        }
+                    `}</style>
+
                     {/* Month Tabs */}
-                    <div style={{
-                        display: 'flex',
-                        gap: '0.5rem',
-                        flexWrap: 'wrap',
-                        justifyContent: 'center',
-                        marginBottom: '2rem',
-                        maxWidth: '1000px',
-                        margin: '0 auto 2rem'
-                    }}>
-                        {forecast2026.timeline2026.map((month, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setActiveTimelineMonth(idx)}
-                                style={{
-                                    padding: '0.75rem 1.25rem',
-                                    background: activeTimelineMonth === idx ? (month.activity === 'Very High' ? '#dc2626' : month.activity.includes('High') ? '#f59e0b' : '#10b981') : '#f8fafc',
-                                    color: activeTimelineMonth === idx ? 'white' : '#475569',
-                                    border: activeTimelineMonth === idx ? 'none' : '2px solid #e2e8f0',
-                                    borderRadius: '12px',
-                                    fontSize: '0.95rem',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease',
-                                    minWidth: '120px'
-                                }}
-                            >
-                                {month.month.split(' ')[0]}
-                            </button>
-                        ))}
+                    <div className="month-tabs-container">
+                        {forecast2026.timeline2026.map((month, idx) => {
+                            const getActivityColor = (activity) => {
+                                if (activity === 'Very High') return '#dc2626';
+                                if (activity.includes('High')) return '#f59e0b';
+                                if (activity === 'Moderate') return '#fb923c';
+                                return '#10b981';
+                            };
+
+                            return (
+                                <button
+                                    key={idx}
+                                    onClick={() => setActiveTimelineMonth(idx)}
+                                    className={`month-tab-btn ${activeTimelineMonth === idx ? 'active' : ''}`}
+                                    style={{
+                                        background: activeTimelineMonth === idx ? getActivityColor(month.activity) : '#f8fafc'
+                                    }}
+                                >
+                                    {month.month.split(' ')[0]}
+                                </button>
+                            );
+                        })}
                     </div>
 
                     {/* Active Month Display */}
                     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
                         {forecast2026.timeline2026.map((month, idx) => (
                             activeTimelineMonth === idx && (
-                                <div key={idx} style={{
+                                <div key={idx} className="month-card-mobile" style={{
                                     background: 'white',
                                     borderRadius: '20px',
                                     padding: '2.5rem',
@@ -408,7 +447,7 @@ const TickForecast2026 = () => {
                                     position: 'relative'
                                 }}>
                                     {/* Activity Badge */}
-                                    <div style={{
+                                    <div className="activity-badge-mobile" style={{
                                         position: 'absolute',
                                         top: '1rem',
                                         right: '1rem',
@@ -424,7 +463,39 @@ const TickForecast2026 = () => {
                                         {month.activity} Activity
                                     </div>
 
-                                    <div style={{ marginBottom: '2rem', paddingRight: '200px' }}>
+                                    <style>{`
+                                        @media (max-width: 768px) {
+                                            .month-content-header {
+                                                margin-bottom: 1.5rem !important;
+                                                padding-right: 0 !important;
+                                            }
+
+                                            .month-content-header h3 {
+                                                font-size: 1.75rem !important;
+                                            }
+
+                                            .month-content-header h4 {
+                                                font-size: 1.125rem !important;
+                                            }
+
+                                            .month-content-header p {
+                                                font-size: 1rem !important;
+                                            }
+
+                                            .activity-badge-mobile {
+                                                position: static !important;
+                                                display: block !important;
+                                                width: fit-content !important;
+                                                margin-bottom: 1rem !important;
+                                            }
+
+                                            .month-card-mobile {
+                                                padding: 1.5rem !important;
+                                            }
+                                        }
+                                    `}</style>
+
+                                    <div className="month-content-header" style={{ marginBottom: '2rem', paddingRight: '200px' }}>
                                         <h3 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.75rem', color: '#1e293b' }}>
                                             {month.month}
                                         </h3>
