@@ -52,21 +52,33 @@ const TickForecast2026 = () => {
     return (
         <div className="landing-container light-mode">
             <SeoMeta
-                title="2026 Tick Forecast | Annual Outlook & Risk Predictions"
-                description="Read the 2026 Tick Forecast. Expert analysis on Lyme disease risk, tick population trends, and regional outlooks for the upcoming season."
+                title="2026 Tick & Vector Risk Outlook | National Forecast & Disease Trends"
+                description="Get the 2026 tick and mosquito risk forecast. Explore national predictions, regional trends, and data-driven insights on tick-borne disease and climate impacts."
                 schema={{
                     "@context": "https://schema.org",
-                    "@type": "MedicalWebPage",
-                    "name": "2026 Tick Forecast",
-                    "description": "Annual tick activity and Lyme disease risk forecast for 2026.",
-                    "about": {
-                        "@type": "MedicalCondition",
-                        "name": "Lyme Disease"
+                    "@type": "Article",
+                    "headline": "2026 Tick & Vector Risk Outlook",
+                    "description": "Comprehensive 2026 tick and mosquito activity forecast based on weather patterns, habitat data, and disease surveillance.",
+                    "datePublished": "2024-12-01",
+                    "dateModified": "2024-12-06",
+                    "author": {
+                        "@type": "Organization",
+                        "name": "TickRisk"
                     },
                     "publisher": {
                         "@type": "Organization",
                         "name": "TickRisk"
-                    }
+                    },
+                    "about": [
+                        {
+                            "@type": "MedicalCondition",
+                            "name": "Lyme Disease"
+                        },
+                        {
+                            "@type": "Thing",
+                            "name": "Tick-borne diseases"
+                        }
+                    ]
                 }}
             />
 
@@ -78,6 +90,21 @@ const TickForecast2026 = () => {
                 background: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(/images/hero-2026.png) center/cover no-repeat'
             }}>
                 <div className="hero-content fade-in-up">
+                    {/* Last Updated Badge */}
+                    <div style={{
+                        display: 'inline-block',
+                        padding: '0.5rem 1rem',
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        backdropFilter: 'blur(10px)',
+                        borderRadius: '9999px',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.95)',
+                        marginBottom: '1.5rem',
+                        border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                        📅 Last Updated: December 2024
+                    </div>
                     <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>
                         2026 Tick & Vector Risk Outlook
                     </h1>
@@ -111,7 +138,7 @@ const TickForecast2026 = () => {
                     <div className="section-header">
                         <h2 className="section-title">2026 Tick Forecast: National Overview</h2>
                         <p className="section-desc" style={{ maxWidth: '800px', margin: '0 auto', lineHeight: '1.7' }}>
-                            The <strong>2026 tick activity forecast</strong> projects higher-than-average populations nationwide. Mild winter conditions and climate impacts are driving robust tick season predictions across multiple regions.
+                            The <strong>2026 tick activity forecast</strong> projects higher-than-average populations nationwide. Based on <a href="https://www.cdc.gov/ticks/surveillance/index.html" target="_blank" rel="noopener noreferrer" style={{ color: '#2e7d32', textDecoration: 'underline' }}>CDC surveillance data</a> and <a href="https://www.noaa.gov/climate" target="_blank" rel="noopener noreferrer" style={{ color: '#2e7d32', textDecoration: 'underline' }}>NOAA climate forecasts</a>, mild winter conditions and climate impacts are driving robust tick season predictions across multiple regions.
                         </p>
                     </div>
 
@@ -186,7 +213,7 @@ const TickForecast2026 = () => {
                     </div>
                     <div style={{ maxWidth: '900px', margin: '0 auto', fontSize: '1.1rem', lineHeight: '1.8', color: '#444' }}>
                         <p style={{ marginBottom: '2rem' }}>
-                            {forecast2026.nationalOverview.summary}
+                            {forecast2026.nationalOverview.summary} The 2026 tick season is expected to begin earlier and last longer than historical averages in key endemic regions.
                         </p>
 
                         <div style={{
@@ -313,7 +340,7 @@ const TickForecast2026 = () => {
                                 </div>
 
                                 <div style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>
-                                    <strong>States:</strong> {region.states.join(', ')}
+                                    <strong>States:</strong> {region.states.join(', ')} — <Link to={`/tick-forecast-${region.states[0].toLowerCase().replace(' ', '-')}`} style={{ color: '#2e7d32', textDecoration: 'underline' }}>View detailed state forecasts</Link>
                                 </div>
 
                                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '1.5rem' }}>
@@ -350,6 +377,33 @@ const TickForecast2026 = () => {
                             </div>
                         )
                     ))}
+                </div>
+            </section>
+
+            {/* Mid-Page CTA - ZIP Code Checker */}
+            <section className="section" style={{
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0f766e 100%)',
+                textAlign: 'center',
+                padding: '4rem 2rem'
+            }}>
+                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    <h2 style={{
+                        fontSize: '2rem',
+                        fontWeight: '800',
+                        color: 'white',
+                        marginBottom: '1rem'
+                    }}>
+                        Check Your Local 2026 Tick Risk
+                    </h2>
+                    <p style={{
+                        fontSize: '1.125rem',
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        marginBottom: '2rem',
+                        lineHeight: '1.6'
+                    }}>
+                        Ready to see current tick activity in your area? Get today's tick forecast and personalized risk assessment for your ZIP code.
+                    </p>
+                    <ZipInput buttonText="Get Your Local Forecast" />
                 </div>
             </section>
 
@@ -711,8 +765,16 @@ const TickForecast2026 = () => {
                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                             border: '1px solid rgba(6, 95, 70, 0.1)'
                         }}>
-                            Tick-Borne Disease Monitor
+                            2026 Disease Surveillance Trends
                         </span>
+                        <p style={{
+                            fontSize: '0.875rem',
+                            color: '#64748b',
+                            marginTop: '0.5rem',
+                            textAlign: 'center'
+                        }}>
+                            Based on <a href="https://www.cdc.gov/lyme/data-research/index.html" target="_blank" rel="noopener noreferrer" style={{ color: '#065f46', textDecoration: 'underline' }}>CDC Lyme Disease Surveillance</a> data
+                        </p>
                     </div>
 
                     <button
@@ -744,7 +806,7 @@ const TickForecast2026 = () => {
                             }}></div>
                             <img
                                 src={tickDiseases.diseases[activeDisease].image || "/images/doctor_examining_rash.png"}
-                                alt={`Doctor examining patient for ${tickDiseases.diseases[activeDisease].name}`}
+                                alt={`2026 ${tickDiseases.diseases[activeDisease].name} forecast and symptoms - tick-borne disease surveillance`}
                                 style={{
                                     width: '100%',
                                     height: '100%',
