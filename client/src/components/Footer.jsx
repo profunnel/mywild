@@ -9,7 +9,9 @@ const Footer = () => {
                 {/* Top Section: Brand, Resources, Legal */}
                 <div style={styles.topSection}>
                     <div style={styles.brandColumn}>
-                        <h4 style={styles.brandTitle}>Tick Forecast</h4>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+                            <img src="/images/fieldkind-logo.png" alt="FieldKind" style={{ height: '40px', marginRight: '0.5rem' }} />
+                        </div>
                         <p style={styles.brandText}>
                             Empowering you with real-time tick activity forecasts to stay safe outdoors.
                         </p>
@@ -54,7 +56,7 @@ const Footer = () => {
 
                 {/* Bottom Section: Copyright */}
                 <div style={styles.copyright}>
-                    &copy; {new Date().getFullYear()} Tick Forecast. All rights reserved.
+                    &copy; {new Date().getFullYear()} FieldKind. All rights reserved.
                 </div>
             </div>
         </footer>
