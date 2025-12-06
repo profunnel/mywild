@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { states } from '../statesConfig';
 import SeoMeta from './SeoMeta';
 import ZipInput from './ZipInput';
-import { sharedContent, tickDiseases } from '../content/pageContent';
+import { sharedContent, tickDiseases, tickRemoval } from '../content/pageContent';
 import { Section } from './ui';
 import forecast2026 from '../content/forecast2026Content';
 import tickSpecies from '../data/tickSpecies';
@@ -1030,29 +1030,208 @@ const TickForecast2026 = () => {
                 </div>
             </Section>
 
-            {/* Prevention Best Practices */}
-            <section className="section bg-white">
-                <div className="container">
-                    <div className="section-header">
-                        <h2 className="section-title">{sharedContent.prevention.title}</h2>
-                        <div className="text-left" style={{ maxWidth: '800px', margin: '0 auto', whiteSpace: 'pre-line' }}>
-                            {sharedContent.prevention.body}
-                        </div>
-                    </div>
+            {/* Removal Guide - Protocol Deck Redesign */}
+            <Section id="removal" className="relative overflow-hidden" style={{ background: '#0f172a', padding: '6rem 0' }}>
+                {/* Background Ambient Mesh */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
                 </div>
-            </section>
 
-            {/* Lyme Awareness Section */}
-            <section className="section bg-cream">
-                <div className="container">
-                    <div className="section-header">
-                        <h2 className="section-title">{sharedContent.lymeAwareness.title}</h2>
-                        <p className="section-desc">
-                            {sharedContent.lymeAwareness.body}
+                <div className="max-w-7xl mx-auto relative z-10">
+                    <div className="text-center mb-20">
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight" style={{ fontSize: '3rem', fontWeight: '900', color: 'white', marginBottom: '1.5rem' }}>
+                            Tick Bite Protocol
+                        </h2>
+                        <p className="text-xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed" style={{ fontSize: '1.25rem', color: '#94a3b8', maxWidth: '42rem', margin: '0 auto', fontWeight: '300', lineHeight: '1.625' }}>
+                            Acting quickly and correctly is your best defense against infection.
+                            <span className="block mt-2 text-emerald-400 font-medium" style={{ display: 'block', marginTop: '0.5rem', color: '#34d399', fontWeight: '500' }}>Follow these 6 critical steps.</span>
                         </p>
                     </div>
+
+                    <style>{`
+                        .protocol-grid {
+                            display: grid;
+                            grid-template-columns: 1fr;
+                            gap: 2rem;
+                        }
+                        @media (min-width: 768px) {
+                            .protocol-grid { grid-template-columns: repeat(2, 1fr); }
+                        }
+                        @media (min-width: 1024px) {
+                            .protocol-grid { grid-template-columns: repeat(3, 1fr); }
+                        }
+
+                        .protocol-card {
+                            position: relative;
+                            padding: 2rem;
+                            border-radius: 1.5rem;
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid rgba(255, 255, 255, 0.1);
+                            backdrop-filter: blur(12px);
+                            overflow: hidden;
+                            transition: all 0.5s ease;
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        .protocol-card:hover {
+                            background: rgba(255, 255, 255, 0.1);
+                            transform: translateY(-0.5rem);
+                            box-shadow: 0 25px 50px -12px rgba(6, 78, 59, 0.25);
+                        }
+
+                        .watermark-number {
+                            position: absolute;
+                            right: -1.5rem;
+                            bottom: -2.5rem;
+                            font-size: 10rem;
+                            font-weight: 900;
+                            color: rgba(255, 255, 255, 0.05);
+                            font-family: 'Outfit', sans-serif;
+                            line-height: 1;
+                            pointer-events: none;
+                            transition: color 0.5s ease;
+                        }
+
+                        .protocol-card:hover .watermark-number {
+                            color: rgba(255, 255, 255, 0.1);
+                        }
+
+                        .card-content {
+                            position: relative;
+                            z-index: 10;
+                        }
+
+                        .card-title {
+                            font-size: 1.5rem;
+                            font-weight: 700;
+                            color: white;
+                            margin-bottom: 1rem;
+                            transition: color 0.3s ease;
+                        }
+
+                        .protocol-card:hover .card-title {
+                            color: #34d399; /* emerald-400 */
+                        }
+
+                        .card-description {
+                            color: #cbd5e1; /* slate-300 */
+                            margin-bottom: 2rem;
+                            line-height: 1.625;
+                            font-size: 1.125rem;
+                            font-weight: 300;
+                        }
+
+                        .step-list {
+                            list-style: none;
+                            padding: 0;
+                            margin: 0;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 1rem;
+                        }
+
+                        .step-item {
+                            display: flex;
+                            align-items: flex-start;
+                            gap: 1rem;
+                            color: #94a3b8; /* slate-400 */
+                            font-size: 0.875rem;
+                            font-weight: 500;
+                        }
+
+                        .step-dot {
+                            margin-top: 0.375rem;
+                            width: 0.5rem;
+                            height: 0.5rem;
+                            border-radius: 50%;
+                            background-color: #10b981; /* emerald-500 */
+                            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+                            flex-shrink: 0;
+                            transition: transform 0.3s ease;
+                        }
+
+                        .protocol-card:hover .step-dot {
+                            transform: scale(1.25);
+                        }
+
+                        .step-text {
+                            transition: color 0.3s ease;
+                        }
+
+                        .protocol-card:hover .step-text {
+                            color: #e2e8f0; /* slate-200 */
+                        }
+
+                        .hover-glow {
+                            position: absolute;
+                            inset: 0;
+                            border-radius: 1.5rem;
+                            border: 1px solid rgba(255, 255, 255, 0.1);
+                            pointer-events: none;
+                            transition: all 0.5s ease;
+                        }
+
+                        .protocol-card:hover .hover-glow {
+                            border-color: rgba(16, 185, 129, 0.5);
+                        }
+
+                        .bottom-accent {
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+                            right: 0;
+                            height: 4px;
+                            background: linear-gradient(to right, #10b981, #3b82f6);
+                            transform: scaleX(0);
+                            transform-origin: left;
+                            transition: transform 0.5s ease;
+                        }
+
+                        .protocol-card:hover .bottom-accent {
+                            transform: scaleX(1);
+                        }
+                    `}</style>
+
+                    <div className="protocol-grid">
+                        {tickRemoval.steps.map((step, idx) => (
+                            <div key={idx} className="protocol-card group">
+                                {/* Watermark Number */}
+                                <div className="watermark-number">
+                                    {step.step}
+                                </div>
+
+                                {/* Content */}
+                                <div className="card-content">
+                                    <h3 className="card-title">
+                                        {step.title}
+                                    </h3>
+                                    <p className="card-description">
+                                        {step.description}
+                                    </p>
+
+                                    {/* List */}
+                                    <ul className="step-list">
+                                        {step.details.map((detail, i) => (
+                                            <li key={i} className="step-item">
+                                                <span className="step-dot"></span>
+                                                <span className="step-text">{detail}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {/* Hover Glow Border */}
+                                <div className="hover-glow"></div>
+
+                                {/* Bottom Accent Line */}
+                                <div className="bottom-accent"></div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </section>
+            </Section>
 
             {/* Footer CTA - 2026 Specific */}
             <section className="section" style={{
