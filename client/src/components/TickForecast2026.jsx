@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { states } from '../statesConfig';
 import SeoMeta from './SeoMeta';
 import ZipInput from './ZipInput';
-import { sharedContent } from '../content/pageContent';
+import { sharedContent, tickDiseases } from '../content/pageContent';
+import { Section } from './ui';
 import forecast2026 from '../content/forecast2026Content';
 import tickSpecies from '../data/tickSpecies';
 import stateTickMapping from '../data/stateTickMapping';
@@ -476,105 +477,324 @@ const TickForecast2026 = () => {
                 </div>
             </section>
 
-            {/* Disease Surveillance & Projections */}
-            <section className="section bg-white">
-                <div className="container">
-                    <div className="section-header">
-                        <h2 className="section-title">2026 Disease Surveillance Trends</h2>
-                        <p className="section-desc">
-                            Projected case numbers and risk trends for major tick-borne diseases
-                        </p>
-                    </div>
+            {/* Disease Surveillance Section */}
+            <Section variant="white" id="diseases" style={{ padding: 0, background: 'transparent' }}>
+                {/* Rounded Transition Container */}
+                <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    background: '#f8fafc',
+                    marginTop: '-3rem',
+                    borderTopLeftRadius: '2.5rem',
+                    borderTopRightRadius: '2.5rem',
+                    zIndex: 10,
+                    boxShadow: '0 -20px 40px -10px rgba(0,0,0,0.1)',
+                    overflow: 'hidden'
+                }}>
+                    <style>{`
+                        .disease-carousel-container * {
+                            box-sizing: border-box;
+                        }
+                        .disease-carousel-container {
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        .disease-image-side {
+                            width: 100%;
+                            min-height: 300px;
+                            position: relative;
+                            overflow: hidden;
+                        }
+                        .disease-content-side {
+                            width: 100%;
+                            padding: 2rem;
+                            background: white;
+                            position: relative;
+                            overflow-wrap: break-word;
+                            word-break: break-word;
+                            max-width: 100%;
+                        }
+                        .disease-content-side p {
+                            max-width: 100%;
+                        }
+                        .disease-nav-btn {
+                            position: absolute;
+                            top: 150px;
+                            transform: translateY(-50%);
+                            z-index: 30;
+                            width: 4rem;
+                            height: 4rem;
+                            border-radius: 50%;
+                            background: #065f46;
+                            border: 2px solid #ffffff;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                            color: white;
+                        }
+                        .disease-nav-btn:hover {
+                            background: #047857;
+                            transform: translateY(-50%) scale(1.1);
+                            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+                        }
+                        .disease-title-desktop {
+                            display: none;
+                        }
+                        .disease-title-mobile {
+                            display: block;
+                            position: relative;
+                            padding: 1.5rem 2rem 0.5rem 2rem;
+                            background: white;
+                            color: #0f172a;
+                            z-index: 20;
+                            border-bottom: 1px solid #f1f5f9;
+                        }
 
-                    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-                        {Object.values(forecast2026.diseaseProjections).map((disease, idx) => (
-                            <div key={idx} style={{
-                                background: 'linear-gradient(to right, #ffffff 0%, #fef3c7 100%)',
-                                borderRadius: '16px',
-                                padding: '2rem',
-                                marginBottom: '1.5rem',
-                                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                                border: '2px solid #fbbf24',
-                                position: 'relative'
-                            }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-                                    <div>
-                                        <h3 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1e293b', marginBottom: '0.5rem' }}>
-                                            {disease.name}
-                                        </h3>
-                                        <div style={{ fontSize: '0.95rem', color: '#64748b' }}>
-                                            <strong>2024 Cases:</strong> {disease.cases2024}
-                                        </div>
-                                    </div>
-                                    <div style={{
-                                        background: '#dc2626',
-                                        color: 'white',
-                                        padding: '0.75rem 1.5rem',
-                                        borderRadius: '9999px',
-                                        fontSize: '0.9rem',
-                                        fontWeight: '600',
-                                        textAlign: 'center'
-                                    }}>
-                                        {disease.projection2026}
-                                    </div>
-                                </div>
-
-                                <div style={{ marginBottom: '1.25rem' }}>
-                                    <h4 style={{ fontSize: '0.95rem', fontWeight: '600', color: '#0f766e', marginBottom: '0.5rem' }}>
-                                        Why This Projection?
-                                    </h4>
-                                    <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#475569' }}>
-                                        {disease.reasoning}
-                                    </p>
-                                </div>
-
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                                    gap: '1rem',
-                                    padding: '1rem',
-                                    background: 'rgba(255,255,255,0.8)',
-                                    borderRadius: '12px',
-                                    fontSize: '0.9rem'
-                                }}>
-                                    <div>
-                                        <strong style={{ color: '#0f766e', display: 'block', marginBottom: '0.25rem' }}>Symptoms:</strong>
-                                        <span style={{ color: '#475569' }}>{disease.symptoms}</span>
-                                    </div>
-                                    <div>
-                                        <strong style={{ color: '#0f766e', display: 'block', marginBottom: '0.25rem' }}>Peak Risk:</strong>
-                                        <span style={{ color: '#475569' }}>{disease.peakRisk}</span>
-                                    </div>
-                                    <div>
-                                        <strong style={{ color: '#0f766e', display: 'block', marginBottom: '0.25rem' }}>Prevention:</strong>
-                                        <span style={{ color: '#475569' }}>{disease.prevention}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                        @media (min-width: 768px) {
+                            .disease-carousel-container {
+                                flex-direction: column;
+                                height: auto;
+                            }
+                            .disease-image-side {
+                                width: 100%;
+                                height: 500px;
+                            }
+                            .disease-content-side {
+                                width: 100%;
+                                padding: 3rem 4rem;
+                                display: grid;
+                                grid-template-columns: 1.2fr 1fr;
+                                gap: 4rem;
+                                align-items: start;
+                            }
+                            .disease-title-desktop {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 1.5rem;
+                            }
+                            .disease-title-mobile {
+                                display: none;
+                            }
+                            .disease-nav-btn {
+                                top: 500px;
+                            }
+                        }
+                    `}</style>
 
                     <div style={{
-                        maxWidth: '800px',
-                        margin: '3rem auto 0',
-                        padding: '2rem',
-                        background: '#fef2f2',
-                        borderLeft: '6px solid #dc2626',
-                        borderRadius: '12px'
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: 20,
+                        padding: '1.5rem',
+                        textAlign: 'center',
+                        pointerEvents: 'none'
                     }}>
-                        <h3 style={{ fontSize: '1.3rem', fontWeight: '700', color: '#991b1b', marginBottom: '1rem' }}>
-                            ⚠️ Early Detection is Critical
-                        </h3>
-                        <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#7f1d1d', marginBottom: '1rem' }}>
-                            Most tick-borne diseases are treatable when caught early. If you develop fever, rash, or flu-like symptoms
-                            within 30 days of a tick bite or outdoor activity in tick habitat, seek medical attention immediately.
-                        </p>
-                        <p style={{ fontSize: '0.95rem', fontWeight: '600', color: '#991b1b' }}>
-                            Tell your doctor about potential tick exposure — it can guide faster diagnosis and treatment.
-                        </p>
+                        <span style={{
+                            display: 'inline-block',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '9999px',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            backdropFilter: 'blur(4px)',
+                            color: '#065f46',
+                            fontSize: '0.875rem',
+                            fontWeight: '800',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                            border: '1px solid rgba(6, 95, 70, 0.1)'
+                        }}>
+                            Tick-Borne Disease Monitor
+                        </span>
+                    </div>
+
+                    <button
+                        onClick={() => setActiveDisease(prev => (prev === 0 ? tickDiseases.diseases.length - 1 : prev - 1))}
+                        className="disease-nav-btn"
+                        style={{ left: '2rem' }}
+                        aria-label="Previous disease"
+                    >
+                        <svg style={{ width: '2rem', height: '2rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+
+                    <button
+                        onClick={() => setActiveDisease(prev => (prev === tickDiseases.diseases.length - 1 ? 0 : prev + 1))}
+                        className="disease-nav-btn"
+                        style={{ right: '2rem' }}
+                        aria-label="Next disease"
+                    >
+                        <svg style={{ width: '2rem', height: '2rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+
+                    <div className="disease-carousel-container">
+                        <div className="disease-image-side">
+                            <div style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'linear-gradient(to right, rgba(6, 78, 59, 0.3), transparent)',
+                                zIndex: 10,
+                                mixBlendMode: 'multiply'
+                            }}></div>
+                            <img
+                                src={tickDiseases.diseases[activeDisease].image || "/images/doctor_examining_rash.png"}
+                                alt={`Doctor examining patient for ${tickDiseases.diseases[activeDisease].name}`}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    position: 'absolute',
+                                    inset: 0,
+                                    transition: 'opacity 0.5s ease-in-out'
+                                }}
+                            />
+
+                            <div className="disease-title-mobile">
+                                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', margin: '0 0 0.5rem 0', lineHeight: 1.1, color: '#0f172a' }}>
+                                    {tickDiseases.diseases[activeDisease].name}
+                                </h2>
+                                <p style={{ color: '#059669', fontSize: '0.95rem', fontWeight: '600', margin: 0 }}>
+                                    Vector: {tickDiseases.diseases[activeDisease].vector}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="disease-content-side">
+                            <div className="disease-info-left">
+                                <div className="disease-title-desktop" style={{ marginBottom: '2rem' }}>
+                                    <h2 style={{
+                                        fontSize: '3rem',
+                                        fontWeight: '800',
+                                        color: '#0f172a',
+                                        marginBottom: '1rem',
+                                        lineHeight: 1.1,
+                                        letterSpacing: '-0.02em'
+                                    }}>
+                                        {tickDiseases.diseases[activeDisease].name}
+                                    </h2>
+                                    <div style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.75rem',
+                                        color: '#047857',
+                                        fontWeight: '600',
+                                        background: '#ecfdf5',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '0.75rem',
+                                        border: '1px solid #d1fae5'
+                                    }}>
+                                        <span style={{ fontSize: '1.25rem' }}>🕷️</span>
+                                        <span>Vector: {tickDiseases.diseases[activeDisease].vector}</span>
+                                    </div>
+                                </div>
+
+                                <p style={{
+                                    fontSize: '1.125rem',
+                                    color: '#475569',
+                                    lineHeight: '1.8',
+                                    marginBottom: '2.5rem',
+                                    borderLeft: '4px solid #10b981',
+                                    paddingLeft: '1.5rem'
+                                }}>
+                                    {tickDiseases.diseases[activeDisease].description}
+                                </p>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2.5rem' }}>
+                                <div>
+                                    <h4 style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        fontSize: '0.875rem',
+                                        fontWeight: '800',
+                                        color: '#64748b',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em',
+                                        marginBottom: '1.25rem'
+                                    }}>
+                                        <span style={{ width: '0.75rem', height: '0.75rem', borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 0 4px rgba(245, 158, 11, 0.2)' }}></span>
+                                        Early Warning Signs
+                                    </h4>
+                                    <ul style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                        gap: '1rem',
+                                        listStyle: 'none',
+                                        padding: 0,
+                                        margin: 0
+                                    }}>
+                                        {(
+                                            tickDiseases.diseases[activeDisease].symptoms?.early ||
+                                            tickDiseases.diseases[activeDisease].symptoms?.typical ||
+                                            tickDiseases.diseases[activeDisease].symptoms?.initial ||
+                                            []
+                                        ).slice(0, 4).map((symptom, idx) => (
+                                            <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', color: '#334155', fontWeight: '500', fontSize: '1rem' }}>
+                                                <svg style={{ width: '1.25rem', height: '1.25rem', color: '#f59e0b', flexShrink: 0, marginTop: '0.125rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                                <span>{symptom}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h4 style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        fontSize: '0.875rem',
+                                        fontWeight: '800',
+                                        color: '#64748b',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em',
+                                        marginBottom: '1.25rem'
+                                    }}>
+                                        <span style={{ width: '0.75rem', height: '0.75rem', borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 0 4px rgba(239, 68, 68, 0.2)' }}></span>
+                                        Progression & Symptoms
+                                    </h4>
+                                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                        {(
+                                            Array.isArray(tickDiseases.diseases[activeDisease].symptoms?.late) ? tickDiseases.diseases[activeDisease].symptoms.late :
+                                                Array.isArray(tickDiseases.diseases[activeDisease].symptoms?.severe) ? tickDiseases.diseases[activeDisease].symptoms.severe :
+                                                    tickDiseases.diseases[activeDisease].symptoms?.severe ? [tickDiseases.diseases[activeDisease].symptoms.severe] :
+                                                        []
+                                        ).slice(0, 3).map((symptom, idx) => (
+                                            <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', color: '#475569', fontSize: '0.95rem' }}>
+                                                <svg style={{ width: '1.25rem', height: '1.25rem', color: '#ef4444', flexShrink: 0, marginTop: '0.125rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                <span>{symptom}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '3rem' }}>
+                                {tickDiseases.diseases.map((_, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setActiveDisease(idx)}
+                                        style={{
+                                            height: '0.5rem',
+                                            borderRadius: '9999px',
+                                            transition: 'all 0.3s',
+                                            border: 'none',
+                                            padding: 0,
+                                            cursor: 'pointer',
+                                            width: idx === activeDisease ? '2.5rem' : '0.5rem',
+                                            background: idx === activeDisease ? '#059669' : '#cbd5e1'
+                                        }}
+                                        aria-label={`Go to disease ${idx + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </Section>
 
             {/* Regional Links Section */}
             <section className="section bg-cream">
