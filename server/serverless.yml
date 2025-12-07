@@ -1,0 +1,25 @@
+service: mywild-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'prod'}
+  region: us-east-1
+  memorySize: 512
+  timeout: 29
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY, ''}
+  httpApi:
+    cors: true
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi: '*'
+
+package:
+  exclude:
+    - .env
+    - .env.example
+    - '*.md'

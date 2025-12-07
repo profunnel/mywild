@@ -844,6 +844,15 @@ app.post('/api/summary', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// --- Lambda Handler ---
+const serverless = require('serverless-http');
+
+// Export Lambda handler
+module.exports.handler = serverless(app);
+
+// Local development server
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}

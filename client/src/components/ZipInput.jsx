@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import '../pages/LandingPage.css';
 
 const ZipInput = ({ buttonText = "Check Risk" }) => {
@@ -17,7 +18,7 @@ const ZipInput = ({ buttonText = "Check Risk" }) => {
             try {
                 // Enforce a minimum loading time of 1.5 seconds for the animation to be seen
                 const [res] = await Promise.all([
-                    axios.get(`http://localhost:3002/api/geocode?zip=${location}`),
+                    axios.get(`${API_BASE_URL}/api/geocode?zip=${location}`),
                     new Promise(resolve => setTimeout(resolve, 1500))
                 ]);
 

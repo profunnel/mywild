@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import { MapContainer, TileLayer, Circle, useMap } from 'react-leaflet';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend, ComposedChart, Bar, Scatter } from 'recharts';
 import 'leaflet/dist/leaflet.css';
@@ -160,9 +161,9 @@ function ResultsPage() {
             try {
                 console.log("Fetching data for:", lat, lon);
                 const [forecastRes, historyRes, heatmapRes] = await Promise.all([
-                    axios.get(`http://localhost:3002/api/forecast?lat=${lat}&lon=${lon}&state=${state}`),
-                    axios.get(`http://localhost:3002/api/history?lat=${lat}&lon=${lon}&state=${state}`),
-                    axios.get(`http://localhost:3002/api/heatmap?lat=${lat}&lon=${lon}&radius=${radius}`),
+                    axios.get(`${API_BASE_URL}/api/forecast?lat=${lat}&lon=${lon}&state=${state}`),
+                    axios.get(`${API_BASE_URL}/api/history?lat=${lat}&lon=${lon}&state=${state}`),
+                    axios.get(`${API_BASE_URL}/api/heatmap?lat=${lat}&lon=${lon}&radius=${radius}`),
                     new Promise(resolve => setTimeout(resolve, 1500)) // Enforce minimum 1.5s loading time
                 ]);
 
@@ -370,7 +371,7 @@ function ResultsPage() {
                 // But we can ensure it's true just in case.
                 setIsSummaryLoading(true);
                 try {
-                    const res = await axios.post('http://localhost:3002/api/summary', {
+                    const res = await axios.post(`${API_BASE_URL}/api/summary`, {
                         status: forecast.risk.status,
                         factors: factors,
                         weather: forecast.weather
