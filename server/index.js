@@ -11,8 +11,20 @@ const PORT = 3002;
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Strip Lambda API Gateway base path if present
+app.use((req, res, next) => {
+    // Remove stage prefixes like /prod, /default, /default/mywild-api
+    req.url = req.url.replace(/^\/(prod|default|default\/mywild-api)/, '') || '/';
+    next();
+});
+
 
 // --- Helper Functions ---
 
