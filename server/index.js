@@ -14,7 +14,8 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: false
 }));
 app.use(express.json());
 
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
     req.url = req.url.replace(/^\/(prod|default|default\/mywild-api)/, '') || '/';
     next();
 });
+
 
 
 // --- Helper Functions ---
