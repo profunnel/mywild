@@ -146,14 +146,14 @@ const StateForecastPage = ({ slug }) => {
                             "description": pageDescription,
                             "author": {
                                 "@type": "Organization",
-                                "name": "FieldKind"
+                                "name": "MyWild"
                             },
                             "publisher": {
                                 "@type": "Organization",
-                                "name": "FieldKind",
+                                "name": "MyWild",
                                 "logo": {
                                     "@type": "ImageObject",
-                                    "url": "https://fieldkind.com/images/fieldkind-logo.png"
+                                    "url": "https://mywild.com/mywild-logo.png"
                                 }
                             },
                             "datePublished": "2024-12-01",

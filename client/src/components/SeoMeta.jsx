@@ -13,7 +13,7 @@ const SeoMeta = ({
     keywords
 }) => {
     const location = useLocation();
-    const siteUrl = 'https://fieldkind.com';
+    const siteUrl = 'https://mywild.com';
     const canonicalUrl = canonical || `${siteUrl}${location.pathname}`;
     const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
 
@@ -32,7 +32,7 @@ const SeoMeta = ({
             <meta property="og:title" content={title} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={fullOgImage} />
-            <meta property="og:site_name" content="FieldKind" />
+            <meta property="og:site_name" content="MyWild" />
 
             {/* Twitter Card */}
             <meta name="twitter:card" content="summary_large_image" />

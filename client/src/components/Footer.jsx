@@ -10,7 +10,7 @@ const Footer = () => {
                 <div style={styles.topSection}>
                     <div style={styles.brandColumn}>
                         <Link to="/" style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', textDecoration: 'none' }}>
-                            <img src="/images/fieldkind-logo.png" alt="FieldKind - Home" style={{ height: '40px', marginRight: '0.5rem', cursor: 'pointer' }} />
+                            <img src="/mywild-logo.png" alt="MyWild - Home" style={{ height: '40px', marginRight: '0.5rem', cursor: 'pointer' }} />
                         </Link>
                         <p style={styles.brandText}>
                             Empowering you with real-time tick activity forecasts to stay safe outdoors.
@@ -56,7 +56,7 @@ const Footer = () => {
 
                 {/* Bottom Section: Copyright */}
                 <div style={styles.copyright}>
-                    &copy; {new Date().getFullYear()} FieldKind. All rights reserved.
+                    &copy; {new Date().getFullYear()} MyWild. All rights reserved.
                 </div>
             </div>
         </footer>

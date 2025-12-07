@@ -3,4 +3,4 @@ Allow: /
 Disallow: /results
 
 # Sitemap location
-Sitemap: https://fieldkind.com/sitemap.xml
+Sitemap: https://mywild.com/sitemap.xml

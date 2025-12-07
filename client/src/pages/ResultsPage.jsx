@@ -38,6 +38,7 @@ function ResultsPage() {
     const [showBanner, setShowBanner] = useState(false);
     const [bannerDismissed, setBannerDismissed] = useState(false);
     const [email, setEmail] = useState('');
+    const [emailStatus, setEmailStatus] = useState(null); // 'success', 'duplicate', 'error', or null
 
     // Detect window width for responsive legend labels
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -129,25 +130,22 @@ function ResultsPage() {
             if (error) {
                 // Check if it's a duplicate email error
                 if (error.code === '23505') {
-                    alert(`You're already subscribed! We'll send tick risk updates to ${email}`);
+                    setEmailStatus('duplicate');
                 } else {
                     console.error('Supabase error:', error);
-                    alert('Oops! Something went wrong. Please try again later.');
+                    setEmailStatus('error');
                 }
             } else {
                 // Success!
-                alert(`Thanks! We'll send tick risk updates to ${email} for ${city}, ${state}.`);
+                setEmailStatus('success');
                 console.log('Email subscription saved:', data);
             }
 
-            // Close banner after submission attempt
-            setBannerDismissed(true);
-            setShowBanner(false);
             setEmail(''); // Clear email input
 
         } catch (err) {
             console.error('Error submitting email:', err);
-            alert('Oops! Something went wrong. Please try again later.');
+            setEmailStatus('error');
         }
     };
 
@@ -509,7 +507,7 @@ function ResultsPage() {
     return (
         <div className="results-container">
             <SeoMeta
-                title={`Tick Risk for ${city}, ${state} | Today's Forecast - FieldKind`}
+                title={`Tick Risk for ${city}, ${state} | Today's Forecast - MyWild`}
                 description={`Current tick activity and Lyme disease risk for ${city}, ${state}. Check today's conditions, 7-day forecast, and personalized prevention tips.`}
                 robots="noindex, follow"
             />
@@ -853,95 +851,139 @@ function ResultsPage() {
                         flexWrap: 'wrap',
                         justifyContent: 'space-between'
                     }}>
-                        {/* CTA Text */}
-                        <div className="banner-content" style={{ flex: '1 1 300px' }}>
-                            <div className="banner-heading" style={{
+                        {/* Show success message or form based on status */}
+                        {emailStatus ? (
+                            /* Success/Status Message */
+                            <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                gap: '0.75rem',
-                                marginBottom: '0.5rem'
+                                gap: '1rem',
+                                width: '100%',
+                                textAlign: 'center',
+                                padding: '0.5rem 0'
                             }}>
-                                <span style={{ fontSize: '1.5rem' }}>📬</span>
-                                <h3 style={{
-                                    color: 'white',
-                                    fontSize: '1.25rem',
-                                    fontWeight: '700',
-                                    margin: 0
-                                }}>
-                                    Stay Protected in 2026
-                                </h3>
+                                <span style={{ fontSize: '2rem' }}>
+                                    {emailStatus === 'success' ? '✅' : emailStatus === 'duplicate' ? '📧' : '⚠️'}
+                                </span>
+                                <div>
+                                    <h3 style={{
+                                        color: 'white',
+                                        fontSize: '1.25rem',
+                                        fontWeight: '700',
+                                        margin: '0 0 0.25rem 0'
+                                    }}>
+                                        {emailStatus === 'success' ? "You're all set!" :
+                                            emailStatus === 'duplicate' ? "Already subscribed!" :
+                                                "Something went wrong"}
+                                    </h3>
+                                    <p style={{
+                                        color: '#d1fae5',
+                                        fontSize: '0.95rem',
+                                        margin: 0
+                                    }}>
+                                        {emailStatus === 'success'
+                                            ? `We'll send tick risk updates for ${city}, ${state} to your inbox.`
+                                            : emailStatus === 'duplicate'
+                                                ? `You're already receiving updates for this location.`
+                                                : "Please try again later."}
+                                    </p>
+                                </div>
                             </div>
-                            <p className="banner-description" style={{
-                                color: '#d1fae5',
-                                fontSize: '0.95rem',
-                                margin: 0,
-                                lineHeight: '1.5'
-                            }}>
-                                Get weekly tick activity alerts and prevention tips sent directly to your inbox for {city}, {state}.
-                            </p>
-                        </div>
+                        ) : (
+                            /* Original Form Content */
+                            <>
+                                {/* CTA Text */}
+                                <div className="banner-content" style={{ flex: '1 1 300px' }}>
+                                    <div className="banner-heading" style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.75rem',
+                                        marginBottom: '0.5rem'
+                                    }}>
+                                        <span style={{ fontSize: '1.5rem' }}>📬</span>
+                                        <h3 style={{
+                                            color: 'white',
+                                            fontSize: '1.25rem',
+                                            fontWeight: '700',
+                                            margin: 0
+                                        }}>
+                                            Stay Protected in 2026
+                                        </h3>
+                                    </div>
+                                    <p className="banner-description" style={{
+                                        color: '#d1fae5',
+                                        fontSize: '0.95rem',
+                                        margin: 0,
+                                        lineHeight: '1.5'
+                                    }}>
+                                        Get weekly tick activity alerts and prevention tips sent directly to your inbox for {city}, {state}.
+                                    </p>
+                                </div>
 
-                        {/* Email Form */}
-                        <form onSubmit={handleEmailSubmit} className="banner-form" style={{
-                            display: 'flex',
-                            gap: '0.75rem',
-                            flex: '1 1 350px',
-                            maxWidth: '500px'
-                        }}>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
-                                required
-                                style={{
-                                    flex: 1,
-                                    padding: '0.75rem 1rem',
-                                    borderRadius: '0.5rem',
-                                    border: '2px solid rgba(255,255,255,0.2)',
-                                    background: 'rgba(255,255,255,0.95)',
-                                    fontSize: '1rem',
-                                    outline: 'none',
-                                    transition: 'all 0.2s',
-                                    color: '#1f2937'
-                                }}
-                                onFocus={(e) => {
-                                    e.target.style.borderColor = '#10b981';
-                                    e.target.style.background = 'white';
-                                }}
-                                onBlur={(e) => {
-                                    e.target.style.borderColor = 'rgba(255,255,255,0.2)';
-                                    e.target.style.background = 'rgba(255,255,255,0.95)';
-                                }}
-                            />
-                            <button
-                                type="submit"
-                                style={{
-                                    padding: '0.75rem 1.75rem',
-                                    background: 'white',
-                                    color: '#047857',
-                                    border: 'none',
-                                    borderRadius: '0.5rem',
-                                    fontSize: '1rem',
-                                    fontWeight: '700',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                                    whiteSpace: 'nowrap'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.target.style.transform = 'translateY(-2px)';
-                                    e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.transform = 'translateY(0)';
-                                    e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
-                                }}
-                            >
-                                Subscribe →
-                            </button>
-                        </form>
+                                {/* Email Form */}
+                                <form onSubmit={handleEmailSubmit} className="banner-form" style={{
+                                    display: 'flex',
+                                    gap: '0.75rem',
+                                    flex: '1 1 350px',
+                                    maxWidth: '500px'
+                                }}>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Enter your email"
+                                        required
+                                        style={{
+                                            flex: 1,
+                                            padding: '0.75rem 1rem',
+                                            borderRadius: '0.5rem',
+                                            border: '2px solid rgba(255,255,255,0.2)',
+                                            background: 'rgba(255,255,255,0.95)',
+                                            fontSize: '1rem',
+                                            outline: 'none',
+                                            transition: 'all 0.2s',
+                                            color: '#1f2937'
+                                        }}
+                                        onFocus={(e) => {
+                                            e.target.style.borderColor = '#10b981';
+                                            e.target.style.background = 'white';
+                                        }}
+                                        onBlur={(e) => {
+                                            e.target.style.borderColor = 'rgba(255,255,255,0.2)';
+                                            e.target.style.background = 'rgba(255,255,255,0.95)';
+                                        }}
+                                    />
+                                    <button
+                                        type="submit"
+                                        style={{
+                                            padding: '0.75rem 1.75rem',
+                                            background: 'white',
+                                            color: '#047857',
+                                            border: 'none',
+                                            borderRadius: '0.5rem',
+                                            fontSize: '1rem',
+                                            fontWeight: '700',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'translateY(-2px)';
+                                            e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'translateY(0)';
+                                            e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+                                        }}
+                                    >
+                                        Subscribe →
+                                    </button>
+                                </form>
+                            </>
+                        )}
 
                         {/* Close Button */}
                         <button

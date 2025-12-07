@@ -63,14 +63,14 @@ const TickForecast2026 = () => {
                     "dateModified": new Date().toISOString().split('T')[0],
                     "author": {
                         "@type": "Organization",
-                        "name": "FieldKind"
+                        "name": "MyWild"
                     },
                     "publisher": {
                         "@type": "Organization",
-                        "name": "FieldKind",
+                        "name": "MyWild",
                         "logo": {
                             "@type": "ImageObject",
-                            "url": "https://fieldkind.com/images/fieldkind-logo.png"
+                            "url": "https://mywild.com/mywild-logo.png"
                         }
                     },
                     "about": [

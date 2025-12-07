@@ -125,7 +125,7 @@ function LandingPage() {
     return (
         <div className="landing-container light-mode">
             <SeoMeta
-                title="FieldKind | Real-Time Tick Forecast & Lyme Disease Risk"
+                title="MyWild | Real-Time Tick Forecast & Lyme Disease Risk"
                 description="Check your local tick risk with our real-time forecast. Get science-driven predictions for tick activity, Lyme disease risk, and prevention tips for your ZIP code."
                 keywords="tick forecast, tick risk, Lyme disease, tick activity, tick prevention, tick bite"
                 ogType="website"
@@ -134,24 +134,24 @@ function LandingPage() {
                     "@graph": [
                         {
                             "@type": "WebSite",
-                            "@id": "https://fieldkind.com/#website",
-                            "url": "https://fieldkind.com",
-                            "name": "FieldKind",
+                            "@id": "https://mywild.com/#website",
+                            "url": "https://mywild.com",
+                            "name": "MyWild",
                             "description": "Real-time tick forecasts and Lyme disease risk predictions",
                             "potentialAction": {
                                 "@type": "SearchAction",
-                                "target": "https://fieldkind.com/results?zip={search_term_string}",
+                                "target": "https://mywild.com/results?zip={search_term_string}",
                                 "query-input": "required name=search_term_string"
                             }
                         },
                         {
                             "@type": "Organization",
-                            "@id": "https://fieldkind.com/#organization",
-                            "name": "FieldKind",
-                            "url": "https://fieldkind.com",
+                            "@id": "https://mywild.com/#organization",
+                            "name": "MyWild",
+                            "url": "https://mywild.com",
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": "https://fieldkind.com/images/fieldkind-logo.png"
+                                "url": "https://mywild.com/mywild-logo.png"
                             },
                             "sameAs": []
                         }

@@ -5,8 +5,8 @@ const PrivacyPolicy = () => {
     return (
         <div style={styles.container}>
             <SeoMeta
-                title="Privacy Policy - FieldKind"
-                description="FieldKind privacy policy. Learn how we collect, use, and protect your data when you use our tick forecast services."
+                title="Privacy Policy - MyWild"
+                description="MyWild privacy policy. Learn how we collect, use, and protect your data when you use our tick forecast services."
                 robots="noindex, follow"
             />
             <h1 style={styles.heading}>Privacy Policy</h1>
@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
             <section style={styles.section}>
                 <h2 style={styles.subheading}>1. Introduction</h2>
                 <p style={styles.text}>
-                    Welcome to FieldKind. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
+                    Welcome to MyWild. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
                 </p>
             </section>
 
